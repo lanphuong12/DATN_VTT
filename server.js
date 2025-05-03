@@ -441,6 +441,56 @@ app.delete('/api/dmkh/:makh', (req, res) => {
     });
 });
 
+app.get("/congno", (req, res) => {
+    const fromDate = req.query.from;
+    const toDate = req.query.to;
+  
+    const query = `
+      SELECT
+        kh.MaKH AS "Mã KH/NCC",
+        kh.TenKH AS "Tên KH/NCC",
+        kh.MaSoThue AS "Mã số thuế",
+        IFNULL(ndk.DuNo, 0) AS "Nợ đầu kỳ",
+        IFNULL(ndk.DuCo, 0) AS "Có đầu kỳ",
+        IFNULL(ps_ban.PhatSinhNo, 0) AS "Phát sinh nợ",
+        IFNULL(ps_mua.PhatSinhCo, 0) AS "Phát sinh có",
+        (IFNULL(ndk.DuNo, 0) + IFNULL(ps_ban.PhatSinhNo, 0)) AS "Nợ cuối kỳ",
+        (IFNULL(ndk.DuCo, 0) + IFNULL(ps_mua.PhatSinhCo, 0)) AS "Có cuối kỳ"
+      FROM DMKH kh
+      LEFT JOIN (
+        SELECT MaKH, SUM(DuNo) AS DuNo, SUM(DuCo) AS DuCo
+        FROM NoDauKy
+        WHERE MaTK = '131'
+        GROUP BY MaKH
+      ) ndk ON kh.MaKH = ndk.MaKH
+      LEFT JOIN (
+        SELECT hd.MaKH, SUM(cthd.ThanhTien) AS PhatSinhNo
+        FROM HoaDon hd
+        JOIN CTHoaDon cthd ON hd.SoCT = cthd.SoCT
+        WHERE hd.NgayCT BETWEEN ? AND ? AND hd.MaTK = '131'
+        GROUP BY hd.MaKH
+      ) ps_ban ON kh.MaKH = ps_ban.MaKH
+      LEFT JOIN (
+        SELECT MaKH, SUM(TienThanhToan) AS PhatSinhCo
+        FROM HoaDonMuaHang
+        WHERE NgayCT BETWEEN ? AND ? AND MaTK = '131'
+        GROUP BY MaKH
+      ) ps_mua ON kh.MaKH = ps_mua.MaKH
+      WHERE (IFNULL(ndk.DuNo, 0) + IFNULL(ndk.DuCo, 0) + 
+             IFNULL(ps_ban.PhatSinhNo, 0) + IFNULL(ps_mua.PhatSinhCo, 0)) > 0
+      ORDER BY kh.MaKH
+    `;
+  
+    db.all(query, [fromDate, toDate, fromDate, toDate], (err, rows) => {
+        if (err) {
+            console.error("Lỗi SQLite:", err.message);
+            return res.status(500).json({ error: err.message });
+          };
+          
+      res.json(rows);
+    });
+  });
+
 // Khởi động server
 app.listen(3000, () => {
     console.log('Server chạy tại http://localhost:3000');
