@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>PHIẾU KẾ TOÁN</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    body {
+      font-family: "Times New Roman", serif;
+      margin: 40px;
+    }
+    .center { text-align: center; }
+    .bold { font-weight: bold; }
+    table { width: 100%; border-collapse: collapse; }
+    td, th { padding: 5px; }
+    .bordered td, .bordered th { border: 1px solid black; }
+    .signatures td {
+      height: 100px;
+      text-align: center;
+      vertical-align: top;
+    }
+  </style>
+</head>
+<body>
+  <table>
+    <tr>
+      <td style="width: 20%;">
+        <img src="logo.png" alt="Logo Công ty" style="width: 100px;">
+      </td>
+      <td style="width: 80%;">
+        <div class="bold">CÔNG TY TNHH SẢN XUẤT VÀ THƯƠNG MẠI HÙNG LONG</div>
+        Địa chỉ: thôn Tráng Vũ - xã Đồng Than - huyện Yên Mỹ - tỉnh Hưng Yên<br>
+        Mã số thuế: 0900581808
+      </td>
+    </tr>
+  </table>
+
+  <h2 class="center">PHIẾU KẾ TOÁN</h2>
+
+  <table>
+    <tr>
+      <td class="center">Ngày: <b><span id="ngayct"></span></b></td>
+    <tr>
+        <td class="center">Số chứng từ: <b><span id="soct"></span></b></td>
+    </tr>
+    <tr>
+      </tr>
+  </table>
+  <table>
+    <tr>
+      <td>Đối tác: <b><span id="tenkh"></span></b></td>
+    </tr>s
+    <tr>
+        <td>Địa chỉ: <span id="diachi"></span></td>
+      </tr>
+    <tr>
+      <td>Số tiền: <b><span id="sotien"></span></b></td>
+    </tr>
+    tr>
+      <td>Bằng chữ: <span id="tienthanhtoanChu"></span></td>
+    </tr>
+    <tr>
+      <td colspan="2">Kèm theo: <b>1</b> chứng từ gốc</td>
+    </tr>
+  </table>
+
+  <br>
+  <table class="bordered" id="ctphieuTable">
+    <tr>
+      <th>Diễn giải</th>
+      <th>TK Nợ</th>
+      <th>TK Có</th>
+      <th>Tiền</th>
+    </tr>
+    <tbody>
+      <!-- Data will be dynamically inserted here -->
+  </tbody>
+  </table>
+
+  <br><br>
+  <table class="signatures">
+    <tr>
+      <td><b>Giám đốc</b><br><i>(Ký, họ tên, đóng dấu)</i></td>
+      <td><b>Kế toán trưởng</b><br><i>(Ký, họ tên)</i></td>
+      <td>Người lập phiếu<br><i>(Ký, họ tên)</i></td>
+    </tr>
+    <tr>
+      <td><b>Vũ Xuân Quân</b></td>
+      <td><b>Bùi Thị Nở</b></td>
+      <td></td>
+    </tr>
+  </table>
+  <script>
+    // Hàm chuyển số thành chữ
+    function convertNumberToWords(number) {
+        const units = ['', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
+        const tens = ['', 'mười', 'hai mươi', 'ba mươi', 'bốn mươi', 'năm mươi', 'sáu mươi', 'bảy mươi', 'tám mươi', 'chín mươi'];
+        const thousands = ['', 'nghìn', 'triệu', 'tỷ'];
+
+        if (number === 0) return 'không';
+
+        let result = '';
+        let partCount = 0;
+
+        while (number > 0) {
+            let part = number % 1000;
+            if (part > 0) {
+                result = convertPartToWords(part) + (thousands[partCount] ? ' ' + thousands[partCount] : '') + ' ' + result;
+            }
+            number = Math.floor(number / 1000);
+            partCount++;
+        }
+
+        return result.trim();
+    }
+
+    function convertPartToWords(part) {
+        const units = ['', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
+        const tens = ['', 'mười', 'hai mươi', 'ba mươi', 'bốn mươi', 'năm mươi', 'sáu mươi', 'bảy mươi', 'tám mươi', 'chín mươi'];
+        
+        let result = '';
+        
+        const hundred = Math.floor(part / 100);
+        const ten = Math.floor((part % 100) / 10);
+        const unit = part % 10;
+        
+        if (hundred > 0) {
+            result += units[hundred] + ' trăm ';
+        }
+        
+        if (ten > 0) {
+            result += tens[ten] + ' ';
+        } else if (ten === 0 && (unit > 0 || hundred > 0)) {
+            result += 'lẻ ';
+        }
+        
+        if (unit > 0) {
+            result += units[unit];
+        }
+
+        return result.trim();
+    }
+
+    // Khi trang được tải, lấy thông tin từ URL và gọi API
+    document.addEventListener("DOMContentLoaded", function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const soct = urlParams.get("soct");
+
+    if (soct) {
+        fetch(`/api/pkt/${soct}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                    return;
+                }
+
+              // Thông tin phiếu (từ dòng đầu tiên)
+              const phieu = data[0];
+              document.getElementById('soct').textContent = phieu.SoCTPhieu;
+              document.getElementById('ngayct').textContent = phieu.NgayCT;
+              document.getElementById('tenkh').textContent = phieu.TenKH;
+              document.getElementById('diachi').textContent = phieu.DiaChi;
+
+              
+
+              // Chi tiết phiếu
+              const ctphieuTable = document.getElementById('ctphieuTable').getElementsByTagName('tbody')[0];
+              data.forEach((item, index) => {
+                const row = ctphieuTable.insertRow(); // ✅ đúng tên biến
+                row.insertCell(0).textContent = item.LyDo;
+                row.insertCell(1).textContent = item.TKNo;
+                row.insertCell(2).textContent = item.TKCo;
+                row.insertCell(3).textContent = item.SoTien.toLocaleString('vi-VN');
+
+                // Chuyển số thành chữ
+                const tienthanhtoanChu = convertNumberToWords(item.SoTien);
+                document.getElementById('tienthanhtoanChu').textContent = tienthanhtoanChu;
+
+                document.getElementById('sotien').textContent = item.SoTien;
+              });
+
+
+            })
+            .catch(err => {
+                console.error('Lỗi:', err);
+                alert('Lỗi khi lấy dữ liệu phiếu.');
+            });
+    } else {
+        alert('Không tìm thấy số chứng từ trên URL.');
+    }
+});
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

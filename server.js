@@ -485,7 +485,60 @@ app.get('/api/hdgtgt/:socthdgtgt', (req, res) => {
     });
 });
 
+// BẢNG PHIẾU KẾ TOÁN - PKT
+// API: Lấy danh sách dữ liệu bảng PKT
+app.get('/api/pkt', (req, res) => {
+    db.all("SELECT * FROM PhieuKT", [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
 
+app.get('/api/pkt/:soct', (req, res) => {
+    const soct = req.params.soct;
+    const sql = `
+SELECT 
+        p.SoCT AS SoCTPhieu,
+        p.NgayCT,
+        p.MaKH,
+        kh.TenKH,
+        kh.DiaChi,
+        kh.DienThoai,
+        kh.MaSoThue,
+        p.LyDo,
+        p.CTLQ,
+        p.MaCT,
+        ct.Id,
+        ct.TKNo,
+        ct.TKCo,
+        ct.NoiDung,
+        ct.SoTien
+    FROM PhieuKT p
+    JOIN CTPhieu ct ON p.SoCT = ct.SoCT
+    JOIN DMKH kh ON p.MaKH = kh.MaKH
+    WHERE p.SoCT = ?;
+
+    `;
+    db.all(sql, [soct], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'Không tìm thấy phiếu với số chứng từ này.' });
+        }
+        res.json(rows);
+    });
+});
+
+
+// BẢNG HÓA ĐƠN MUA HÀNG - HDMH
+// API: Lấy danh sách dữ liệu bảng HDMH
+app.get('/api/hdmh', (req, res) => {
+    db.all("SELECT * FROM HoaDonMuaHang", [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
   
 
 // Khởi động server
