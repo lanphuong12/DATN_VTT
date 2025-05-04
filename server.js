@@ -431,65 +431,62 @@ app.put('/api/dmkh/:makh', (req, res) => {
         });
 });
 
-
-
-// API xóa dữ liệu bảng danh muc hàng hóa
-app.delete('/api/dmkh/:makh', (req, res) => {
-    db.run("DELETE FROM DMKH WHERE MaKH = ?", [req.params.makh], err => {
+// BẢNG HÓA ĐƠN GIÁ TRỊ GIA TĂNG (HDHH) - HDGTGT
+// API: Lấy danh sách dữ liệu bảng HDHH
+app.get('/api/hdgtgt', (req, res) => {
+    db.all("SELECT * FROM HDHH", [], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
-        res.json({ success: true });
+        res.json(rows);
     });
 });
 
-app.get("/congno", (req, res) => {
-    const fromDate = req.query.from;
-    const toDate = req.query.to;
-  
-    const query = `
-      SELECT
-        kh.MaKH AS "Mã KH/NCC",
-        kh.TenKH AS "Tên KH/NCC",
-        kh.MaSoThue AS "Mã số thuế",
-        IFNULL(ndk.DuNo, 0) AS "Nợ đầu kỳ",
-        IFNULL(ndk.DuCo, 0) AS "Có đầu kỳ",
-        IFNULL(ps_ban.PhatSinhNo, 0) AS "Phát sinh nợ",
-        IFNULL(ps_mua.PhatSinhCo, 0) AS "Phát sinh có",
-        (IFNULL(ndk.DuNo, 0) + IFNULL(ps_ban.PhatSinhNo, 0)) AS "Nợ cuối kỳ",
-        (IFNULL(ndk.DuCo, 0) + IFNULL(ps_mua.PhatSinhCo, 0)) AS "Có cuối kỳ"
-      FROM DMKH kh
-      LEFT JOIN (
-        SELECT MaKH, SUM(DuNo) AS DuNo, SUM(DuCo) AS DuCo
-        FROM NoDauKy
-        WHERE MaTK = '131'
-        GROUP BY MaKH
-      ) ndk ON kh.MaKH = ndk.MaKH
-      LEFT JOIN (
-        SELECT hd.MaKH, SUM(cthd.ThanhTien) AS PhatSinhNo
-        FROM HoaDon hd
-        JOIN CTHoaDon cthd ON hd.SoCT = cthd.SoCT
-        WHERE hd.NgayCT BETWEEN ? AND ? AND hd.MaTK = '131'
-        GROUP BY hd.MaKH
-      ) ps_ban ON kh.MaKH = ps_ban.MaKH
-      LEFT JOIN (
-        SELECT MaKH, SUM(TienThanhToan) AS PhatSinhCo
-        FROM HoaDonMuaHang
-        WHERE NgayCT BETWEEN ? AND ? AND MaTK = '131'
-        GROUP BY MaKH
-      ) ps_mua ON kh.MaKH = ps_mua.MaKH
-      WHERE (IFNULL(ndk.DuNo, 0) + IFNULL(ndk.DuCo, 0) + 
-             IFNULL(ps_ban.PhatSinhNo, 0) + IFNULL(ps_mua.PhatSinhCo, 0)) > 0
-      ORDER BY kh.MaKH
-    `;
-  
-    db.all(query, [fromDate, toDate, fromDate, toDate], (err, rows) => {
-        if (err) {
-            console.error("Lỗi SQLite:", err.message);
-            return res.status(500).json({ error: err.message });
-          };
-          
-      res.json(rows);
+// // API: Lấy 1 dòng theo socthdgtgt
+// app.get('/api/hdgtgt/:socthdgtgt', (req, res) => {
+//     db.get("SELECT * FROM HDHH WHERE SoCT = ?", [req.params.socthdgtgt], (err, row) => {
+//         if (err) return res.status(500).json({ error: err.message });
+//         if (!row) return res.status(404).json({ error: "Không tìm thấy hóa đơn." });
+//         res.json(row);
+//     });
+// });
+
+// API: Lấy chi tiết hóa đơn theo SoCT kèm thông tin hàng hóa từ DMHH
+app.get('/api/hdgtgt/:socthdgtgt', (req, res) => {
+    const soCT = req.params.socthdgtgt;
+
+    // Lấy thông tin hóa đơn
+    db.get("SELECT * FROM HDHH WHERE SoCT = ?", [soCT], (err, hoadon) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!hoadon) return res.status(404).json({ error: "Không tìm thấy hóa đơn." });
+
+        // Lấy chi tiết hóa đơn có JOIN với bảng DMHH để lấy tên hàng hóa và đơn vị tính
+        const queryCT = `
+            SELECT 
+                cth.*, 
+                dmhh.TenHH, 
+                dmhh.DVT 
+            FROM 
+                CTHoaDon cth
+            JOIN 
+                DMHH dmhh ON cth.MaHH = dmhh.MaHH
+            WHERE 
+                cth.SoCT = ?
+        `;
+
+        db.all(queryCT, [soCT], (err, cthoadon) => {
+            if (err) return res.status(500).json({ error: err.message });
+
+            // Lấy thông tin khách hàng
+            db.get("SELECT * FROM DMKH WHERE MaKH = ?", [hoadon.MaKH], (err, khachhang) => {
+                if (err) return res.status(500).json({ error: err.message });
+
+                res.json({ hoadon, cthoadon, khachhang });
+            });
+        });
     });
-  });
+});
+
+
+  
 
 // Khởi động server
 app.listen(3000, () => {

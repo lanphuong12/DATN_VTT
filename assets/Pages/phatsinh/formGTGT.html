@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Hóa đơn giá trị gia tăng</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    body {
+      font-family: "Times New Roman", serif;
+      font-size: 14px;
+      margin: 40px;
+    }
+
+    .header-table, .info-table, .goods-table, .sign-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .header-table td {
+      vertical-align: top;
+    }
+
+    .logo {
+      width: 100px;
+    }
+
+    .right-align {
+      text-align: right;
+    }
+
+    .center {
+      text-align: center;
+    }
+
+    .bold {
+      font-weight: bold;
+    }
+
+    .goods-table th, .goods-table td {
+      border: 1px solid black;
+      padding: 4px;
+      text-align: center;
+    }
+
+    .no-border {
+      border: none;
+    }
+
+    .signature {
+      height: 100px;
+      vertical-align: bottom;
+    }
+
+    .uppercase {
+      text-transform: uppercase;
+    }
+
+    .mt-10 {
+      margin-top: 10px;
+    }
+
+    .mt-20 {
+      margin-top: 20px;
+    }
+
+    .mb-10 {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <table class="header-table">
+    <tr>
+      <td style="width: 20%;">
+        <img src="logo.png" alt="Logo" class="logo">
+      </td>
+      <td style="width: 55%;">
+        <div class="bold uppercase">CÔNG TY TNHH SẢN XUẤT VÀ THƯƠNG MẠI HÙNG LONG</div>
+        <div>Địa chỉ: thôn Tráng Vũ - xã Đồng Than - huyện Yên Mỹ - tỉnh Hưng Yên</div>
+        <div>Điện thoại: 0437959595</div>
+        <div>Mã số thuế: 0900581808</div>
+      </td>
+      <td style="width: 25%;" class="center">
+        <div class="bold">Mẫu số: 01GTKT3/001</div>
+        <div>Ký hiệu: AA/14P</div>
+        <div>Số: 0000123</div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Title -->
+  <div class="center bold uppercase mt-20" style="font-size: 27px; color: red;">
+    HÓA ĐƠN GIÁ TRỊ GIA TĂNG
+  </div>
+  <div class="center"><strong>Ngày:</strong> <span id="ngayct"></span></div>
+  <div class="center"><strong>Số chứng từ:</strong> <span id="soct"></span></div>
+  <!-- Info -->
+  <table class="info-table mt-20">
+    <tr>
+      <td>Họ tên người mua hàng: <span id="tenkh"></span></td>
+    </tr>
+    <tr>
+      <td>Địa chỉ <span id="diachi"></span></td>
+    </tr>
+    <tr>
+      <td>Điện thoại người mua hàng: <span id="dienthoai"></span></td>
+    <tr>
+      <td>Mã số thuế: <span id="masothue"></span></td>
+    </tr>
+    
+    <tr>
+      <td>Hình thức thanh toán: ............</td>
+    </tr>
+  </table>
+
+  <!-- Goods Table -->
+  <table class="goods-table mt-20" id="cthoadonTable">
+    <tr>
+      <th>STT</th>
+      <th>Tên hàng hóa, dịch vụ</th>
+      <th>Đơn vị tính</th>
+      <th>Số lượng</th>
+      <th>Đơn giá</th>
+      <th>Thành tiền</th>
+    </tr>
+    <tbody>
+        <!-- Data will be dynamically inserted here -->
+    </tbody>
+    <tr>
+      <td colspan="3" rowspan="4" class="right-align bold">Thuế suất GTGT: <span id="thuesuat"></span></td>
+    </tr>
+    <tr>
+      <td colspan="2" style="text-align: right; font-weight: bold;">Cộng tiền hàng:</td>
+      <td><span id="tongtienhang"></span></td>
+    </tr>
+    <tr>
+      <td colspan="2" style="text-align: right; font-weight: bold;">Tiền thuế GTGT:</td>
+      <td> <span id="tienthue"></span> </td>
+    </tr>
+    <tr>
+      <td colspan="2" style="text-align: right; font-weight: bold;">Tổng cộng tiền thanh toán:</td>
+      <td><span id="tienthanhtoan"></span></td>
+    </tr>
+  </table>
+
+  <div class="mt-10"><strong>Số tiền viết bằng chữ: </strong><span id="tienthanhtoanChu"></span></div>
+
+  <!-- Signatures -->
+  <table class="sign-table mt-20">
+    <tr class="center bold">
+      <td>Người mua hàng</td>
+      <td>Người bán hàng</td>
+      <td>Thủ trưởng đơn vị</td>
+    </tr>
+    <tr class="center">
+      <td>(Ký, ghi rõ họ tên)</td>
+      <td>(Ký, ghi rõ họ tên)</td>
+      <td>(Ký, ghi rõ họ tên, đóng dấu)</td>
+    </tr>
+    <tr class="signature">
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </table>
+  <script>
+    // Hàm chuyển số thành chữ
+    function convertNumberToWords(number) {
+        const units = ['', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
+        const tens = ['', 'mười', 'hai mươi', 'ba mươi', 'bốn mươi', 'năm mươi', 'sáu mươi', 'bảy mươi', 'tám mươi', 'chín mươi'];
+        const thousands = ['', 'nghìn', 'triệu', 'tỷ'];
+
+        if (number === 0) return 'không';
+
+        let result = '';
+        let partCount = 0;
+
+        while (number > 0) {
+            let part = number % 1000;
+            if (part > 0) {
+                result = convertPartToWords(part) + (thousands[partCount] ? ' ' + thousands[partCount] : '') + ' ' + result;
+            }
+            number = Math.floor(number / 1000);
+            partCount++;
+        }
+
+        return result.trim();
+    }
+
+    function convertPartToWords(part) {
+        const units = ['', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
+        const tens = ['', 'mười', 'hai mươi', 'ba mươi', 'bốn mươi', 'năm mươi', 'sáu mươi', 'bảy mươi', 'tám mươi', 'chín mươi'];
+        
+        let result = '';
+        
+        const hundred = Math.floor(part / 100);
+        const ten = Math.floor((part % 100) / 10);
+        const unit = part % 10;
+        
+        if (hundred > 0) {
+            result += units[hundred] + ' trăm ';
+        }
+        
+        if (ten > 0) {
+            result += tens[ten] + ' ';
+        } else if (ten === 0 && (unit > 0 || hundred > 0)) {
+            result += 'lẻ ';
+        }
+        
+        if (unit > 0) {
+            result += units[unit];
+        }
+
+        return result.trim();
+    }
+
+    // Khi trang được tải, lấy thông tin từ URL và gọi API
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const soCT = urlParams.get("soct");
+
+        if (soCT) {
+            fetch(`/api/hdgtgt/${soCT}`)
+                .then(response => response.json())
+                .then(data => {
+                    const hoadon = data.hoadon;
+                    const cthoadon = data.cthoadon;
+                    const khachhang = data.khachhang;
+
+                    // Hiển thị thông tin hóa đơn
+                    document.getElementById('soct').textContent = hoadon.SoCT;
+                    document.getElementById('ngayct').textContent = hoadon.NgayCT;
+                    // document.getElementById('makh').textContent = hoadon.MaKH;
+
+                    // Hiển thị thông tin khách hàng
+                    document.getElementById('tenkh').textContent = khachhang.TenKH;
+                    document.getElementById('diachi').textContent = khachhang.DiaChi;
+                    document.getElementById('dienthoai').textContent = khachhang.DienThoai;
+                    document.getElementById('masothue').textContent = khachhang.MaSoThue;
+
+                    let tongtienhang = 0;
+                    // Hiển thị chi tiết hóa đơn
+                    const cthoadonTable = document.getElementById('cthoadonTable').getElementsByTagName('tbody')[0];
+                    cthoadon.forEach((item, index) => {
+                        const row = cthoadonTable.insertRow();
+                        row.insertCell(0).textContent = index + 1;              // STT
+                        row.insertCell(1).textContent = item.TenHH || '';       // Tên hàng hóa
+                        row.insertCell(2).textContent = item.DVT || '';         // Đơn vị tính
+                        row.insertCell(3).textContent = item.SoLuong;
+                        row.insertCell(4).textContent = item.DonGia;
+                        row.insertCell(5).textContent = item.ThanhTien;
+
+                        tongtienhang += item.DonGia;
+                    });
+
+                    document.getElementById('thuesuat').textContent = hoadon.ThueSuat;
+                    document.getElementById('tongtienhang').textContent = tongtienhang;
+                    document.getElementById('tienthue').textContent = hoadon.TienThue;
+                    document.getElementById('tienthanhtoan').textContent = hoadon.TienThanhToan;
+
+                    // Chuyển số tiền thanh toán thành chữ
+                    const tienthanhtoanChu = convertNumberToWords(hoadon.TienThanhToan);
+                    document.getElementById('tienthanhtoanChu').textContent = tienthanhtoanChu;
+                    
+                })
+                .catch(error => console.error('Lỗi:', error));
+        } else {
+            alert("Không tìm thấy thông tin hóa đơn.");
+        }
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
