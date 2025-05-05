@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>Sổ Chi Tiết Tài Khoản</title>
+  <title>Sổ Cái Tài Khoản</title>
   <style>
     body {
       font-family: "Times New Roman", serif;
@@ -94,10 +94,10 @@
     </div>
   </div>
 
-  <h2>SỔ CHI TIẾT TÀI KHOẢN</h2>
+  <h2>SỔ CÁI TÀI KHOẢN</h2>
   <div class="subtitle">
 
-    Từ ngày <strong>01/01/2025</strong> đến ngày <strong>31/01/2025</strong><br />
+    Từ ngày <strong><span id="ngaybatdau"></span></strong> đến ngày <strong><span id="ngayketthuc"></span></strong><br />
     Tài khoản: <strong>331 - Phải trả cho người bán</strong>
     
 
@@ -138,8 +138,8 @@
       <td></td>
       <td></td>
       <td></td>
-      <td>0</td>
-      <td>3,50,00,000</td>
+      <td><span id="soduno"></span></td>
+      <td><span id="soduco"></span></td>
     </tr>
     <tr>
       <td> </td>
@@ -150,18 +150,18 @@
       <td></td>
       <td></td>
       <td></td>
-      <td></td>
+      <td><span id="tongphatsinh"></span></td>
     </tr>
     <tr>
         <td> </td>
         <td>  </td>
         <td> </td>
-        <td>Số dư đầu kỳ</td>
+        <td>Số dư cuối kỳ</td>
         <td></td>
         <td></td>
         <td></td>
         <td>0</td>
-        <td>3,50,00,000</td>
+        <td><span id="soducuoiky"></span></td>
     </tr>
     <!-- Bạn có thể thêm dòng ở đây nếu cần -->
   </table>
@@ -182,6 +182,51 @@
       <div class="name">Vũ Xuân Quân</div>
     </div>
   </div>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const start = params.get("start");
+    const end = params.get("end");
+    const matk = params.get("matk");
+
+    if (start && end && matk === "331") {
+      fetch(`/api/socaiphaitra?start=${start}&end=${end}&matk=${matk}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) {
+            document.getElementById("sodu").innerText = "Lỗi: " + data.error;
+            return;
+          }
+
+          document.getElementById('ngaybatdau').textContent = start;
+          document.getElementById('ngayketthuc').textContent = end;
+
+          // Hiển thị số dư đầu kỳ
+          const sodu = data.sodudauky || {};
+          const duNo = sodu.DuNo || 0;
+          const duCo = sodu.DuCo || 0;
+          document.getElementById('soduno').textContent = duNo;
+          document.getElementById('soduco').textContent = duCo;
+
+          let tongNo = 0;
+          // data.ctphieu.forEach(row => {
+          //   tongNo += row.TienNo || 0;
+          // });
+          data.ctphieu.forEach((item, index) => {
+            tongNo += item.SoTien  || 0;
+          });
+
+          let soducuoiky = duNo + tongNo + duCo;
+          document.getElementById('tongphatsinh').textContent = tongNo;
+          document.getElementById('soducuoiky').textContent = soducuoiky;
+        })
+        .catch(err => {
+          document.getElementById("sodu").innerText = "Lỗi khi tải dữ liệu: " + err.message;
+        });
+    } else {
+      document.getElementById("sodu").innerText =
+        "Thiếu tham số hoặc mã tài khoản không hợp lệ.";
+    }
+  </script>
 
 </body>
 </html>

@@ -540,7 +540,196 @@ app.get('/api/hdmh', (req, res) => {
     });
 });
   
+app.get('/api/socaiphaithu', (req, res) => {
+    const { start, end, matk } = req.query;
+  
+    if (!start || !end || matk !== '131') {
+      return res.status(400).json({ error: "Thiếu tham số hoặc mã tài khoản không hợp lệ." });
+    }
+  
+    // 1. Lấy số dư đầu kỳ
+    const sql1 = `SELECT * FROM SoDuDauKy WHERE MaTK = ?`;
+    db.get(sql1, [matk], (err1, sodu) => {
+      if (err1) return res.status(500).json({ error: err1.message });
+  
+      // 2. Lấy danh sách giấy báo từ GiayBao có SoCT bắt đầu bằng 'BN'
+      const sql2 = `
+        SELECT * FROM GiayBao 
+        WHERE SoCT LIKE 'BC%' 
+          AND NgayCT BETWEEN ? AND ?
+      `;
+      db.all(sql2, [start, end], (err2, giaybao) => {
+        if (err2) return res.status(500).json({ error: err2.message });
+  
+        const socts = giaybao.map(row => row.SoCT);
+        if (socts.length === 0) {
+          return res.json({ sodudauky: sodu, giaybao: [], ctphieu: [] });
+        }
+  
+        // 3. Lấy chi tiết phiếu từ CTPhieu có TKCo = '131' và SoCT nằm trong danh sách
+        const placeholders = socts.map(() => '?').join(',');
+        const sql3 = `
+          SELECT * FROM CTPhieu 
+          WHERE SoCT IN (${placeholders}) 
+            AND TKCo = '131'
+        `;
+        db.all(sql3, socts, (err3, ctphieu) => {
+          if (err3) return res.status(500).json({ error: err3.message });
+  
+          res.json({
+            sodudauky: sodu,
+            giaybao: giaybao,
+            ctphieu: ctphieu
+          });
+        });
+      });
+    });
+  });
 
+  app.get('/api/socaiphaitra', (req, res) => {
+    const { start, end, matk } = req.query;
+  
+    if (!start || !end || matk !== '331') {
+      return res.status(400).json({ error: "Thiếu tham số hoặc mã tài khoản không hợp lệ." });
+    }
+  
+    // 1. Lấy số dư đầu kỳ
+    const sql1 = `SELECT * FROM SoDuDauKy WHERE MaTK = ?`;
+    db.get(sql1, [matk], (err1, sodu) => {
+      if (err1) return res.status(500).json({ error: err1.message });
+
+      console.log(sodu); // Kiểm tra số dư đầu kỳ
+      // 2. Lấy danh sách giấy báo từ GiayBao có SoCT bắt đầu bằng 'BN'
+      const sql2 = `
+        SELECT * FROM GiayBao 
+        WHERE SoCT LIKE 'BN%' 
+          AND NgayCT BETWEEN ? AND ?
+      `;
+      db.all(sql2, [start, end], (err2, giaybao) => {
+        if (err2) return res.status(500).json({ error: err2.message });
+
+        console.log(giaybao); // Kiểm tra danh sách giấy báo
+        const socts = giaybao.map(row => row.SoCT);
+        if (socts.length === 0) {
+          return res.json({ sodudauky: sodu, giaybao: [], ctphieu: [] });
+        }
+  
+        // 3. Lấy chi tiết phiếu từ CTPhieu có TKNo = '331' và SoCT nằm trong danh sách
+        const placeholders = socts.map(() => '?').join(',');
+        const sql3 = `
+          SELECT * FROM CTPhieu 
+          WHERE SoCT IN (${placeholders}) 
+            AND TKNo = '331'
+        `;
+        db.all(sql3, socts, (err3, ctphieu) => {
+          if (err3) return res.status(500).json({ error: err3.message });
+
+          console.log(ctphieu); // Kiểm tra chi tiết phiếu
+          res.json({
+            sodudauky: sodu,
+            giaybao: giaybao,
+            ctphieu: ctphieu
+          });
+        });
+      });
+    });
+  });
+
+  app.get('/api/sochitietphaithu', (req, res) => {
+    const { start, end, matk } = req.query;
+  
+    if (!start || !end || matk !== '131') {
+      return res.status(400).json({ error: "Thiếu tham số hoặc mã tài khoản không hợp lệ." });
+    }
+  
+    // 1. Lấy số dư đầu kỳ
+    const sql1 = `SELECT * FROM SoDuDauKy WHERE MaTK = ?`;
+    db.get(sql1, [matk], (err1, sodu) => {
+      if (err1) return res.status(500).json({ error: err1.message });
+  
+      // 2. Lấy danh sách giấy báo từ PhieuTC có SoCT bắt đầu bằng 'PT'
+      const sql2 = `
+        SELECT * FROM PhieuTC 
+        WHERE SoCT LIKE 'PT%' 
+          AND NgayCT BETWEEN ? AND ?
+      `;
+      db.all(sql2, [start, end], (err2, phieutc) => {
+        if (err2) return res.status(500).json({ error: err2.message });
+  
+        const socts = phieutc.map(row => row.SoCT);
+        if (socts.length === 0) {
+          return res.json({ sodudauky: sodu, phieutc: [], ctphieu: [] });
+        }
+  
+        // 3. Lấy chi tiết phiếu từ CTPhieu có TKCo = '131' và SoCT nằm trong danh sách
+        const placeholders = socts.map(() => '?').join(',');
+        const sql3 = `
+          SELECT * FROM CTPhieu 
+          WHERE SoCT IN (${placeholders}) 
+            AND TKCo = '131'
+        `;
+        db.all(sql3, socts, (err3, ctphieu) => {
+          if (err3) return res.status(500).json({ error: err3.message });
+  
+          res.json({
+            sodudauky: sodu,
+            phieutc: phieutc,
+            ctphieu: ctphieu
+          });
+        });
+      });
+    });
+  });
+
+  app.get('/api/sochitietphaitra', (req, res) => {
+    const { start, end, matk } = req.query;
+  
+    if (!start || !end || matk !== '331') {
+      return res.status(400).json({ error: "Thiếu tham số hoặc mã tài khoản không hợp lệ." });
+    }
+  
+    // 1. Lấy số dư đầu kỳ
+    const sql1 = `SELECT * FROM SoDuDauKy WHERE MaTK = ?`;
+    db.get(sql1, [matk], (err1, sodu) => {
+      if (err1) return res.status(500).json({ error: err1.message });
+
+      console.log(sodu); // Kiểm tra số dư đầu kỳ
+      // 2. Lấy danh sách giấy báo từ PhieuTC có SoCT bắt đầu bằng 'PC'
+      const sql2 = `
+        SELECT * FROM PhieuTC 
+        WHERE SoCT LIKE 'PC%' 
+          AND NgayCT BETWEEN ? AND ?
+      `;
+      db.all(sql2, [start, end], (err2, phieutc) => {
+        if (err2) return res.status(500).json({ error: err2.message });
+
+        console.log(phieutc); // Kiểm tra danh sách giấy báo
+        const socts = phieutc.map(row => row.SoCT);
+        if (socts.length === 0) {
+          return res.json({ sodudauky: sodu, phieutc: [], ctphieu: [] });
+        }
+  
+        // 3. Lấy chi tiết phiếu từ CTPhieu có TKNo = '331' và SoCT nằm trong danh sách
+        const placeholders = socts.map(() => '?').join(',');
+        const sql3 = `
+          SELECT * FROM CTPhieu 
+          WHERE SoCT IN (${placeholders}) 
+            AND TKNo = '331'
+        `;
+        db.all(sql3, socts, (err3, ctphieu) => {
+          if (err3) return res.status(500).json({ error: err3.message });
+
+          console.log(ctphieu); // Kiểm tra chi tiết phiếu
+          res.json({
+            sodudauky: sodu,
+            phieutc: phieutc,
+            ctphieu: ctphieu
+          });
+        });
+      });
+    });
+  });
+  
 // Khởi động server
 app.listen(3000, () => {
     console.log('Server chạy tại http://localhost:3000');
