@@ -261,7 +261,7 @@ data-keyboard="false">
         </div>
         <div class="row">
           <div class="form-group col-md-12">
-            <label class="control-label">Mã tài hàng</label>
+            <label class="control-label">Mã tài khoản</label>
             <input class="form-control" id="MaTKEdit" disabled type="text" required>
           </div>
         </div>
@@ -313,35 +313,35 @@ data-keyboard="false">
                 <input class="form-control" id="MaTKAdd" type="text" required>
               </div>
             </div>
-            <div class="row">
+            <div class="row"> 
               <div class="form-group col-md-12">
                 <label class="control-label">Tên tài khoản</label>
                 <input class="form-control" id="TenTKAdd" type="text" required>
               </div>
             </div>
-            <div class="row">
+            <div class="row"> 
               <div class="form-group col-md-12">
                 <label class="control-label">Cấp tài khoản</label>
                 <input class="form-control" id="CapTKAdd" type="text" required>
               </div>
             </div>
-            <div class="row">
+            <div class="row"> 
               <div class="form-group col-md-12">
                 <label class="control-label">Tài khoản cấp trên</label>
                 <input class="form-control" id="TKCapTrenAdd" type="text">
               </div>
-              <BR>
+            <BR>
     
-              <button class="btn btn-save" type="submit">Thêm mới</button>
-              <button class="btn btn-cancel" data-dismiss="modal">Hủy</button>
-              <BR>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </form>
-      </div>
+            <button class="btn btn-save" type="submit">Thêm mới</button>
+            <button class="btn btn-cancel" data-dismiss="modal">Hủy</button>
+            <BR>
+          </div>
+          <div class="modal-footer">
+          </div>
+      </form>
     </div>
-      <!-- MODAL SỔ CÁI TÀI KHOẢN-->
+    </div>
+    <!-- MODAL SỔ CÁI TÀI KHOẢN-->
 <div class="modal fade" id="socaiModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
 data-keyboard="false">
 <div class="modal-dialog modal-dialog-centered" role="document">
@@ -499,9 +499,9 @@ data-keyboard="false">
         let targetPage = "";
 
         if (matk === "131") {
-          targetPage = "./Pages/sosach/socaitaikhoanthu.html";
+          targetPage = "../sosach/socaitaikhoanthu.html";
         } else if (matk === "331") {
-          targetPage = "./Pages/sosach/socaitaikhoantra.html";
+          targetPage = "../sosach/socaitaikhoantra.html";
         }
 
         // Mở trang mới trong tab mới với query string
@@ -526,9 +526,9 @@ data-keyboard="false">
     let targetPage = "";
 
     if (matk === "131") {
-      targetPage = "./Pages/sosach/sochitiettaikhoanthu.html";
+      targetPage = "../sosach/sochitiettaikhoanthu.html";
     } else if (matk === "331") {
-      targetPage = "./Pages/sosach/sochitiettaikhoantra.html";
+      targetPage = "../sosach/sochitiettaikhoantra.html";
     }
 
     // Mở trang mới trong tab mới với query string
