@@ -10,11 +10,16 @@ let allDMNH = [];
 let allDMTKNH = [];
 let allDMHH = [];
 let allDMKH = [];
+let filteredDMHH = [];    // dữ liệu sau lọc
+let filteredDMKH = [];    // dữ liệu sau lọc
+let filteredDMTKNH = [];    // dữ liệu sau lọc
+let filteredDMNH = [];    // dữ liệu sau lọc
+let filteredDMTK = [];    // dữ liệu sau lọc
 
 // ================= DANH MỤC TÀI KHOẢN (DMTK) =================
 function renderPageDMTK(page) {
   const start = (page - 1) * pageSize;
-  const pageData = allDMTK.slice(start, start + pageSize);
+  const pageData = filteredDMTK.slice(start, start + pageSize);
   const tbody = $("#dmtkTable tbody");
   tbody.empty();
 
@@ -36,7 +41,7 @@ function renderPageDMTK(page) {
 }
 
 function renderPaginationDMTK() {
-  const totalPages = Math.ceil(allDMTK.length / pageSize);
+  const totalPages = Math.ceil(filteredDMTK.length / pageSize);
   const pagination = $("#pagination");
   pagination.empty();
 
@@ -59,6 +64,7 @@ function loadDMTK() {
       return;
     }
     allDMTK = data;
+    filteredDMTK = data;
     renderPageDMTK(currentPageDMTK);
     renderPaginationDMTK();
   }).fail(function () {
@@ -66,6 +72,16 @@ function loadDMTK() {
   });
 }
 
+function myFunctionDMTK() {
+  const keyword = $("#myInput").val().toLowerCase();
+  filteredDMTK = allDMTK.filter(item =>
+    item.MaTK.toLowerCase().includes(keyword) ||
+    item.TenTK.toLowerCase().includes(keyword) 
+  );
+  currentPageDMTK = 1;
+  renderPageDMTK(currentPageDMTK);
+  renderPaginationDMTK();
+}
 
 function setupAddDMTKForm() {
   const form = document.getElementById("addFormTK");
@@ -156,7 +172,7 @@ function deleteDMTK(matk) {
 // ================= DANH MỤC NGÂN HÀNG (DMNH) =================
 function renderPageDMNH(page) {
   const start = (page - 1) * pageSize;
-  const pageData = allDMNH.slice(start, start + pageSize);
+  const pageData = filteredDMNH.slice(start, start + pageSize);
   const tbody = $("#nganhangTable tbody");
   tbody.empty();
 
@@ -176,7 +192,7 @@ function renderPageDMNH(page) {
 }
 
 function renderPaginationDMNH() {
-  const totalPages = Math.ceil(allDMNH.length / pageSize);
+  const totalPages = Math.ceil(filteredDMNH.length / pageSize);
   const pagination = $("#paginationNH");
   pagination.empty();
 
@@ -199,11 +215,23 @@ function loadDMNH() {
       return;
     }
     allDMNH = data;
+    filteredDMNH = data;
     renderPageDMNH(currentPageDMNH);
     renderPaginationDMNH();
   }).fail(function () {
     alert("Không thể tải dữ liệu ngân hàng.");
   });
+}
+
+function myFunctionDMNH() {
+  const keyword = $("#myInput").val().toLowerCase();
+  filteredDMNH = allDMNH.filter(item =>
+    item.MaNH.toLowerCase().includes(keyword) ||
+    item.TenNH.toLowerCase().includes(keyword)
+  );
+  currentPageDMNH = 1;
+  renderPageDMNH(currentPageDMNH);
+  renderPaginationDMNH();
 }
 
 function editDMNH(manh) {
@@ -287,7 +315,7 @@ function setupAddDMNHForm() {
 // ================= DANH MỤC TÀI KHOẢN NGÂN HÀNG (TKNH) =================
 function renderPageDMTKNH(page) {
   const start = (page - 1) * pageSize;
-  const pageData = allDMTKNH.slice(start, start + pageSize);
+  const pageData = filteredDMTKNH.slice(start, start + pageSize);
   const tbody = $("#TKnganhangTable tbody");
   tbody.empty();
 
@@ -309,7 +337,7 @@ function renderPageDMTKNH(page) {
 }
 
 function renderPaginationDMTKNH() {
-  const totalPages = Math.ceil(allDMTKNH.length / pageSize);
+  const totalPages = Math.ceil(filteredDMTKNH.length / pageSize);
   const pagination = $("#paginationTKNH");
   pagination.empty();
 
@@ -332,11 +360,23 @@ function loadDMTKNH() {
       return;
     }
     allDMTKNH = data;
+    filteredDMTKNH = data;
     renderPageDMTKNH(currentPageDMTKNH);
     renderPaginationDMTKNH();
   }).fail(function () {
     alert("Không thể tải dữ liệu tài khoản ngân hàng.");
   });
+}
+
+function myFunctionDMTKNH() {
+  const keyword = $("#myInput").val().toLowerCase();
+  filteredDMTKNH = allDMTKNH.filter(item =>
+    item.SoTKNH.toLowerCase().includes(keyword) ||
+    item.ChuTaiKhoan.toLowerCase().includes(keyword)
+  );
+  currentPageDMTKNH = 1;
+  renderPageDMTKNH(currentPageDMTKNH);
+  renderPaginationDMTKNH();
 }
 
 function editDMTKNH(sotknh) {
@@ -426,7 +466,7 @@ function setupAddDMTKNHForm() {
 // ================= DANH MỤC HÀNG HÓA (DMHH) =================
 function renderPageDMHH(page) {
   const start = (page - 1) * pageSize;
-  const pageData = allDMHH.slice(start, start + pageSize);
+  const pageData = filteredDMHH.slice(start, start + pageSize);
   const tbody = $("#dmhhTable tbody");
   tbody.empty();
 
@@ -447,7 +487,7 @@ function renderPageDMHH(page) {
 }
 
 function renderPaginationDMHH() {
-  const totalPages = Math.ceil(allDMHH.length / pageSize);
+  const totalPages = Math.ceil(filteredDMHH.length / pageSize);
   const pagination = $("#paginationHH");
   pagination.empty();
 
@@ -470,11 +510,23 @@ function loadDMHH() {
       return;
     }
     allDMHH = data;
+    filteredDMHH = data;
     renderPageDMHH(currentPageDMHH);
     renderPaginationDMHH();
   }).fail(function () {
     alert("Không thể tải dữ liệu danh mục hàng hóa.");
   });
+}
+
+function myFunctionDMHH() {
+  const keyword = $("#myInput").val().toLowerCase();
+  filteredDMHH = allDMHH.filter(item =>
+    item.MaHH.toLowerCase().includes(keyword) ||
+    item.TenHH.toLowerCase().includes(keyword)
+  );
+  currentPageDMHH = 1;
+  renderPageDMHH(currentPageDMHH);
+  renderPaginationDMHH();
 }
 
 
@@ -565,7 +617,7 @@ function deleteDMHH(mahh) {
 // ================= DANH MỤC KHÁCH HÀNG (DMKH) =================
 function renderPageDMKH(page) {
   const start = (page - 1) * pageSize;
-  const pageData = allDMKH.slice(start, start + pageSize);
+  const pageData = filteredDMKH.slice(start, start + pageSize);
   const tbody = $("#dmkhTable tbody");
   tbody.empty();
 
@@ -589,7 +641,7 @@ function renderPageDMKH(page) {
 }
 
 function renderPaginationDMKH() {
-  const totalPages = Math.ceil(allDMKH.length / pageSize);
+  const totalPages = Math.ceil(filteredDMKH.length / pageSize);
   const pagination = $("#paginationKH");
   pagination.empty();
 
@@ -612,11 +664,24 @@ function loadDMKH() {
       return;
     }
     allDMKH = data;
+    filteredDMKH = data;
     renderPageDMKH(currentPageDMKH);
     renderPaginationDMKH();
   }).fail(function () {
     alert("Không thể tải dữ liệu danh mục khách hàng.");
   });
+}
+
+function myFunctionDMKH() {
+  const keyword = $("#myInput").val().toLowerCase();
+  filteredDMKH = allDMKH.filter(item =>
+    item.MaKH.toLowerCase().includes(keyword) ||
+    item.TenKH.toLowerCase().includes(keyword) ||
+    item.DienThoai.toLowerCase().includes(keyword)
+  );
+  currentPageDMKH = 1;
+  renderPageDMKH(currentPageDMKH);
+  renderPaginationDMKH();
 }
 
 

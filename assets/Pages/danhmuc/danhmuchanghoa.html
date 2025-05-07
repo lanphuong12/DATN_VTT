@@ -38,11 +38,7 @@
 <!-- jQuery (cần thiết cho Bootstrap 4) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Bootstrap JS -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-<!-- Bootstrap CSS trong <head> -->
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+ 
 
     <script src="./danhmuc.js"></script>
   </head>
@@ -60,7 +56,7 @@
       <ul class="app-nav">
         <!-- User Menu-->
         <li>
-          <a class="app-nav__item" href="index.html"
+          <a class="app-nav__item" href="../../index.html"
             ><i class="bx bx-log-out bx-rotate-180"></i>
           </a>
         </li>
@@ -72,7 +68,7 @@
       <div class="app-sidebar__user">
         <img
           class="app-sidebar__user-avatar"
-          src="../../resources/images/hay.jpg"
+          src="../../resources/images/logo.jpg"
           width="50px"
           alt="User Image"
         />
@@ -155,8 +151,8 @@
             <i class="treeview-indicator bx bx-chevron-down"></i>
           </a>
           <ul class="treeview-menu1">
-            <li> <a class="treeview-item" href="../sosach/socaitaikhoan.html"  >Sổ cái tài khoản</a > </li>
-            <li> <a class="treeview-item" href="../sosach/sochitiettaikhoan.html" >Sổ chi tiết tài khoản</a > </li>
+            <li > <a class="treeview-item" href="#"  id="openSoCaiModal">Sổ cái tài khoản</a > </li>
+            <li> <a class="treeview-item" href="#" id="openSoChiTietModal">Sổ chi tiết tài khoản</a > </li>
           </ul>
         </li>
         <li class="treeview">
@@ -185,39 +181,34 @@
             <div class="col-md-12">
                 <div class="tile">
                     <div class="tile-body">
-                        <div class="row element-button">
-                            <div class="col-sm-2">
-                                <button class="btn btn-add btn-sm" id="addBtnHH" title="Thêm">
-                                  <i class="fas fa-plus"></i> Thêm mới</button>
-                            </div>
-
-                            <div class="col-sm-2">
-                              <a class="btn btn-delete btn-sm nhap-tu-file" type="button" title="Nhập" onclick="myFunction(this)"><i
-                                  class="fas fa-file-upload"></i> Tải từ file</a>
-                            </div>
-              
-                            <div class="col-sm-2">
-                              <a class="btn btn-delete btn-sm print-file" type="button" title="In" onclick="myApp.printTable()"><i
-                                  class="fas fa-print"></i> In dữ liệu</a>
-                            </div>
-                            <div class="col-sm-2">
-                              <a class="btn btn-delete btn-sm print-file js-textareacopybtn" type="button" title="Sao chép"><i
-                                  class="fas fa-copy"></i> Sao chép</a>
-                            </div>
-              
-                            <div class="col-sm-2">
-                              <a class="btn btn-excel btn-sm" href="" title="In"><i class="fas fa-file-excel"></i> Xuất Excel</a>
-                            </div>
-                            <div class="col-sm-2">
-                              <a class="btn btn-delete btn-sm pdf-file" type="button" title="In" onclick="myFunction(this)"><i
-                                  class="fas fa-file-pdf"></i> Xuất PDF</a>
-                            </div>
-                            <div class="col-sm-2">
-                              <a class="btn btn-delete btn-sm" type="button" title="Xóa" onclick="myFunction(this)"><i
-                                  class="fas fa-trash-alt"></i> Xóa tất cả </a>
-                            </div>
-                          </div>
-                        <table class="table table-hover table-bordered" id="dmhhTable">
+                      <div class="row element-button">
+                        <div class="col-sm-2">
+                          <button class="btn btn-add btn-sm" id="addBtnHH" title="Thêm"><i class="fas fa-plus"></i> Thêm mới</button>
+                        </div>
+          
+                        <div class="col-sm-2">
+                          <a class="btn btn-delete btn-sm print-file" type="button" title="In" onclick="myApp.printTable()"><i
+                              class="fas fa-print"></i> In dữ liệu</a>
+                        </div>
+                        <div class="col-sm-2">
+                          <a class="btn btn-delete btn-sm print-file js-textareacopybtn" type="button" title="Sao chép"><i
+                              class="fas fa-copy"></i> Sao chép</a>
+                        </div>
+          
+                        <div class="col-sm-2">
+                          <a class="btn btn-excel btn-sm" href="" title="In"><i class="fas fa-file-excel"></i> Xuất Excel</a>
+                        </div>
+                        <div class="col-sm-2">
+                          <a class="btn btn-delete btn-sm pdf-file" type="button" title="In" onclick="myFunction(this)"><i
+                              class="fas fa-file-pdf"></i> Xuất PDF</a>
+                        </div>
+                        <div class="col-sm-2">
+                          <a class="btn btn-delete btn-sm" type="button" title="Xóa" onclick="myFunction(this)"><i
+                              class="fas fa-trash-alt"></i> Xóa tất cả </a>
+                        </div>
+                      </div>
+                        <input type="text" id="myInput" onkeyup="myFunctionDMHH()" placeholder="Nhập mã hàng hóa hoặc tên hàng hóa để tìm kiếm..." style="margin-bottom: 12px;">
+                      <table class="table table-hover table-bordered" id="dmhhTable">
                             <thead>
                                 <tr>
                                     <th width="10"><input type="checkbox" id="all"></th>
@@ -252,77 +243,253 @@
         </div>
     </main>
 
-    <div class="modal fade" id="ModalEditHH" tabindex="-1" aria-labelledby="ModalUPLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <form id="editFormHH">
-            <div class="modal-header">
-              <h5 class="modal-title" id="ModalUPLabel">Sửa hàng hóa</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <input type="text" id="MaHHEdit" disabled class="form-control mb-2">
-              <input type="text" id="TenHHEdit" class="form-control mb-2" required>
-              <input type="text" id="DVTEdit" class="form-control mb-2" required>
-            </div>
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Lưu</button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+    <!-- Modal sửa Danh mục hàng hóa --> 
 
-    <!-- Modal thêm Danh mục hàng hóa -->
-<div class="modal fade" id="ModalAddHH" tabindex="-1">
-  <div class="modal-dialog">
-    <form id="addFormHH" class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Thêm hàng hóa</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
+    <div class="modal fade" id="ModalEditHH" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
+data-keyboard="false">
+<div class="modal-dialog modal-dialog-centered" role="document">
+  <form id="editFormHH" class="modal-content">
       <div class="modal-body">
-        <div class="mb-2">
-          <label for="MaHHAdd">Mã thàng hóa</label>
-          <input type="text" id="MaHHAdd" class="form-control" required>
+        <div class="row">
+          <div class="form-group  col-md-12">
+            <span class="thong-tin-thanh-toan">
+              <h5>Sửa thông tin hàng hóa</h5>
+            </span>
+          </div>
         </div>
-        <div class="mb-2">
-          <label for="TenHHAdd">Tên hàng hóa</label>
-          <input type="text" id="TenHHAdd" class="form-control" required>
+        <div class="row">
+          <div class="form-group col-md-12">
+            <label class="control-label">Mã hàng hóa</label>
+            <input class="form-control" id="MaHHEdit" disabled type="text" required>
+          </div>
         </div>
-        <div class="mb-2">
-          <label for="DVTAdd">Đơn vị tính</label>
-          <input type="text" id="DVTAdd" class="form-control" required>
+        <div class="row"> 
+          <div class="form-group col-md-12">
+            <label class="control-label">Tên hàng hóa</label>
+            <input class="form-control" id="TenHHEdit" type="text" required>
+          </div>
         </div>
+        <div class="row"> 
+          <div class="form-group col-md-12">
+            <label class="control-label">Đơn vị tính</label>
+            <input class="form-control" id="DVTEdit" type="text" required>
+          </div>
+        </div>
+        <BR>
+
+        <button class="btn btn-save" type="submit">Lưu</button>
+        <button class="btn btn-cancel" data-dismiss="modal">Hủy</button>
+        <BR>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-success">Thêm mới</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
       </div>
-    </form>
-  </div>
+  </form>
+</div>
 </div>
 
+    <!-- Modal thêm Danh mục hàng hóa -->
+<div class="modal fade" id="ModalAddHH" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
+data-keyboard="false">
+<div class="modal-dialog modal-dialog-centered" role="document">
+  <form id="addFormHH" class="modal-content">
+      <div class="modal-body">
+        <div class="row">
+          <div class="form-group  col-md-12">
+            <span class="thong-tin-thanh-toan">
+              <h5>Thêm hàng hóa</h5>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-md-12">
+            <label class="control-label">Mã hàng hóa</label>
+            <input class="form-control" id="MaHHAdd" type="text" required>
+          </div>
+        </div>
+        <div class="row"> 
+          <div class="form-group col-md-12">
+            <label class="control-label">Tên hàng hóa</label>
+            <input class="form-control" id="TenHHAdd" type="text" required>
+          </div>
+        </div>
+        <div class="row"> 
+          <div class="form-group col-md-12">
+            <label class="control-label">Đơn vị tính</label>
+            <input class="form-control" id="DVTAdd" type="text" required>
+          </div>
+        </div>
+        <BR>
 
-    <script src="js/jquery-3.2.1.min.js"></script>
+        <button class="btn btn-save" type="submit">Thêm mới</button>
+        <button class="btn btn-cancel" data-dismiss="modal">Hủy</button>
+        <BR>
+      </div>
+      <div class="modal-footer">
+      </div>
+  </form>
+</div>
+</div>
+
+ 
+<!-- MODAL SỔ CÁI TÀI KHOẢN-->
+<div class="modal fade" id="socaiModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
+data-keyboard="false">
+<div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-content">
+
+    <div class="modal-body">
+      <div class="row">
+        <div class="form-group  col-md-12">
+          <span class="thong-tin-thanh-toan">
+            <h5>Sổ cái tài khoản</h5>
+          </span>
+        </div>
+      </div>
+      <div class="row" >
+        <div class="form-group col-md-6">
+          <label class="control-label">Từ ngày</label>
+          <input class="form-control" type="date" id="startDate">
+        </div>
+        <BR>
+        <div class="form-group col-md-6">
+          <label class="control-label">Đến ngày</label>
+          <input class="form-control" type="date" id="endDate">
+        </div>
+        <BR>
+        <div class="form-group  col-md-6">
+          <label for="exampleSelect1" class="control-label">Mã tài khoản</label>
+          <select class="form-control" id="maTK">
+            <option value="131">131</option>
+            <option value="331">331</option>
+          </select>
+        </div>
+      </div>
+      <BR>
+      <button class="btn btn-save" type="button" id="confirmBtn">Xác nhận</button>
+      <button class="btn btn-cancel" data-dismiss="modal">Hủy</button>
+      <!-- <a class="btn btn-cancel" data-dismiss="modal" href="#">Hủy bỏ</a> -->
+      <BR>
+    </div>
+    <div class="modal-footer">
+    </div>
+  </div>
+</div>
+</div>
+
+  <!-- MODAL SỔ CÁI CHI TIẾT TÀI KHOẢN-->
+  <div class="modal fade" id="socaiModalSCT" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
+  data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+  
+      <div class="modal-body">
+        <div class="row">
+          <div class="form-group  col-md-12">
+            <span class="thong-tin-thanh-toan">
+              <h5>Sổ cái chi tiết tài khoản</h5>
+            </span>
+          </div>
+        </div>
+        <div class="row" >
+          <div class="form-group col-md-6">
+            <label class="control-label">Từ ngày</label>
+            <input class="form-control" type="date" id="startDate">
+          </div>
+          <BR>
+          <div class="form-group col-md-6">
+            <label class="control-label">Đến ngày</label>
+            <input class="form-control" type="date" id="endDate">
+          </div>
+          <BR>
+          <div class="form-group  col-md-6">
+            <label for="exampleSelect1" class="control-label">Mã tài khoản</label>
+            <select class="form-control" id="maTK">
+              <option value="131">131</option>
+              <option value="331">331</option>
+            </select>
+          </div>
+        </div>
+        <BR>
+        <button class="btn btn-save" type="button" id="confirmBtnSCT">Xác nhận</button>
+        <button class="btn btn-cancel" data-dismiss="modal">Hủy</button>
+        <!-- <a class="btn btn-cancel" data-dismiss="modal" href="#">Hủy bỏ</a> -->
+        <BR>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+  </div>
+
+    <script src="../../js/jquery-3.2.1.min.js"></script>
     <!--===============================================================================================-->
-    <script src="js/popper.min.js"></script>
+    <script src="../../js/popper.min.js"></script>
     <script src="https://unpkg.com/boxicons@latest/dist/boxicons.js"></script>
     <!--===============================================================================================-->
-    <script src="js/bootstrap.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
     <!--===============================================================================================-->
     <script src="/server.js"></script>
     <!--===============================================================================================-->
-    <script src="js/plugins/pace.min.js"></script>
+    <script src="../../js/plugins/pace.min.js"></script>
     <!--===============================================================================================-->
-    <script type="text/javascript" src="js/plugins/chart.js"></script>
+        <script type="text/javascript" src="js/plugins/chart.js"></script>
     <!--===============================================================================================-->
+<script>
+      document.getElementById('openSoCaiModal').addEventListener('click', function (e) {
+        e.preventDefault(); // Ngăn chặn hành vi mặc định
+        $('#socaiModal').modal('show'); // Sử dụng phương thức của Bootstrap để hiển thị modal
+      });
+
+      document.getElementById('confirmBtn').addEventListener('click', function () {
+        const start = document.getElementById('startDate').value;
+        const end = document.getElementById('endDate').value;
+        const matk = document.getElementById('maTK').value;
+
+        let targetPage = "";
+
+        if (matk === "131") {
+          targetPage = "./Pages/sosach/socaitaikhoanthu.html";
+        } else if (matk === "331") {
+          targetPage = "./Pages/sosach/socaitaikhoantra.html";
+        }
+
+        // Mở trang mới trong tab mới với query string
+        if (targetPage) {
+          const url = `${targetPage}?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&matk=${encodeURIComponent(matk)}`;
+          window.open(url, '_blank');
+        }
+      });
+    </script>
+
+<script>
+  document.getElementById('openSoChiTietModal').addEventListener('click', function (e) {
+    e.preventDefault(); // Ngăn chuyển trang ngay
+    $('#socaiModalSCT').modal('show'); // Sử dụng phương thức của Bootstrap để hiển thị modal
+  });
+
+  document.getElementById('confirmBtnSCT').addEventListener('click', function () {
+    const start = document.getElementById('startDate').value;
+    const end = document.getElementById('endDate').value;
+    const matk = document.getElementById('maTK').value;
+
+    let targetPage = "";
+
+    if (matk === "131") {
+      targetPage = "./Pages/sosach/sochitiettaikhoanthu.html";
+    } else if (matk === "331") {
+      targetPage = "./Pages/sosach/sochitiettaikhoantra.html";
+    }
+
+    // Mở trang mới trong tab mới với query string
+    if (targetPage) {
+      const url = `${targetPage}?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&matk=${encodeURIComponent(matk)}`;
+      window.open(url, '_blank');
+    }
+  });
+</script>
     <!-- Các script -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
     <script>
       // Đảm bảo DOM đã sẵn sàng
       $(document).ready(function () {

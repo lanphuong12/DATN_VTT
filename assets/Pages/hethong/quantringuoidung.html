@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Danh sách nhân viên | Quản trị Admin</title>
+    <title>Quản trị người dùng</title>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -31,6 +31,16 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css"
     />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- jQuery (cần thiết cho Bootstrap 4) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+ 
+
+    <script src="./danhmuc.js"></script>
   </head>
 
   <body onload="time()" class="app sidebar-mini rtl">
@@ -46,7 +56,7 @@
       <ul class="app-nav">
         <!-- User Menu-->
         <li>
-          <a class="app-nav__item" href="index.html"
+          <a class="app-nav__item" href="../../index.html"
             ><i class="bx bx-log-out bx-rotate-180"></i>
           </a>
         </li>
@@ -58,7 +68,7 @@
       <div class="app-sidebar__user">
         <img
           class="app-sidebar__user-avatar"
-          src="../../resources/images/hay.jpg"
+          src="../../resources/images/logo.jpg"
           width="50px"
           alt="User Image"
         />
@@ -76,19 +86,10 @@
             <i class="treeview-indicator bx bx-chevron-down"></i>
           </a>
           <ul class="treeview-menu1" style="display: block">
-            <li style="background-color: black">
-              <a class="treeview-item" href="../hethong/quantringuoidung.html">Quản trị người dùng</a>
-            </li>
-            <li>
-              <a class="treeview-item" href="layout_horizontal_sidebar_menu.html" >Sao lưu dữ liệu</a>
-            </li>
-            <li> <a class="treeview-item" href="layout_horizontal_menu1.html">Phục hồi dữ liệu</a>
-            </li>
-            <li>
-              <a class="treeview-item" href="layout_horizontal_menu2.html"
-                >Đăng ký</a
-              >
-            </li>
+            <li style="background-color: black"> <a class="treeview-item" href="../hethong/quantringuoidung.html">Quản trị người dùng</a></li>
+            <!-- <li><a class="treeview-item"  href="layout_horizontal_sidebar_menu.html"  >Sao lưu dữ liệu</a  ></li>
+            <li> <a class="treeview-item" href="layout_horizontal_menu1.html"   >Phục hồi dữ liệu</a></li>
+            <li><a class="treeview-item" href="layout_horizontal_menu2.html" >Đăng ký</a > </li> -->
           </ul>
         </li>
         <li class="treeview">
@@ -97,34 +98,12 @@
             <span class="app-menu__label">Danh mục</span>
             <i class="treeview-indicator bx bx-chevron-down"></i>
           </a>
-          <ul class="treeview-menu1">
-            <li>
-              <a class="treeview-item" href="/assets/hethong/quantringuoidung.html"
-                >Danh mục tài khoản</a
-              >
-            </li>
-            <li>
-              <a
-                class="treeview-item"
-                href="layout_horizontal_sidebar_menu.html"
-                >Danh mục khách hàng</a
-              >
-            </li> 
-            <li>
-              <a class="treeview-item" href="layout_horizontal_menu1.html"
-                >Danh mục hàng hóa</a
-              >
-            </li>
-            <li>
-              <a class="treeview-item" href="layout_horizontal_menu2.html"
-                >Ngân hàng</a
-              >
-            </li>
-            <li>
-              <a class="treeview-item" href="layout_horizontal_menu2.html"
-                >Tài khoản ngân hàng   </a
-              >
-            </li>
+          <ul class="treeview-menu1" >
+            <li ><a class="treeview-item" href="../danhmuc/danhmuctaikhoan.html">Danh mục tài khoản</a ></li>
+            <li><a class="treeview-item"    href="../danhmuc/danhmuckhachhang.html">Danh mục khách hàng</a> </li> 
+            <li >  <a class="treeview-item" href="../danhmuc/danhmuchanghoa.html" >Danh mục hàng hóa</a  > </li>
+            <li> <a class="treeview-item" href="../danhmuc/nganhang.html">Ngân hàng</a></li>
+            <li> <a class="treeview-item" href="../danhmuc/taikhoannganhang.html">Tài khoản ngân hàng   </a></li>
           </ul>
         </li>
         <li class="treeview">
@@ -134,18 +113,8 @@
             <i class="treeview-indicator bx bx-chevron-down"></i>
           </a>
           <ul class="treeview-menu1">
-            <li>
-              <a class="treeview-item" href="/assets/hethong/quantringuoidung.html"
-                >Số dư đầu kỳ tài khoản</a
-              >
-            </li>
-            <li>
-              <a
-                class="treeview-item"
-                href="layout_horizontal_sidebar_menu.html"
-                >Công nợ đầu kỳ</a
-              >
-            </li>
+            <li> <a class="treeview-item" href="../dauky/sodudaukytaikhoan.html">Số dư đầu kỳ tài khoản</a></li>
+            <li>     <a class="treeview-item" href="../dauky/congnodauky.html">Công nợ đầu kỳ</a></li>
           </ul>
         </li>
         <li class="treeview">
@@ -155,32 +124,10 @@
             <i class="treeview-indicator bx bx-chevron-down"></i>
           </a>
           <ul class="treeview-menu1">
-            <li>
-              <a class="treeview-item" href="/assets/hethong/quantringuoidung.html"
-                >Hóa đơn GTGT</a
-              >
-            </li>
-            <li>
-              <a
-                class="treeview-item"
-                href="layout_horizontal_sidebar_menu.html"
-                >Hóa đơn mua hàng</a
-              >
-            </li>
-            <li>
-              <a
-                class="treeview-item"
-                href="layout_horizontal_sidebar_menu.html"
-                >Phiếu kế toán</a
-              >
-            </li>
-            <li>
-              <a
-                class="treeview-item"
-                href="layout_horizontal_sidebar_menu.html"
-                >Hợp đồng</a
-              >
-            </li>
+            <li><a class="treeview-item" href="../phatsinh/hoadongtgt.html" >Hóa đơn GTGT</a  > </li>
+            <li><a class="treeview-item" href="../phatsinh/hoadonmuahang.html">Hóa đơn mua hàng</a></li>
+            <li> <a class="treeview-item" href="../phatsinh/phieuketoan.html" >Phiếu kế toán</a></li>
+            <li><a  class="treeview-item" href="../phatsinh/hopdong.html" >Hợp đồng</a ></li>
           </ul>
         </li>
        
@@ -191,10 +138,10 @@
             <i class="treeview-indicator bx bx-chevron-down"></i>
           </a>
           <ul class="treeview-menu1">
-            <li> <a class="treeview-item" href="/assets/hethong/quantringuoidung.html"  >Phiếu thu tiền</a > </li>
-            <li> <a class="treeview-item" href="layout_horizontal_sidebar_menu.html" >Phiếu chi tiền</a > </li>
-            <li>   <a class="treeview-item" href="layout_horizontal_sidebar_menu.html"  > Giấy báo nợ</a> </li>
-            <li><a class="treeview-item" href="layout_horizontal_sidebar_menu.html"> Giấy báo có </a > </li>
+            <li> <a class="treeview-item" href="../chungtuhachtoan/phieuthutien.html"  >Phiếu thu tiền</a > </li>
+            <li> <a class="treeview-item" href="../chungtuhachtoan/phieuchitien.html" >Phiếu chi tiền</a > </li>
+            <li>   <a class="treeview-item" href="../chungtuhachtoan/giaybaono.html"  > Giấy báo nợ</a> </li>
+            <li><a class="treeview-item" href="../chungtuhachtoan/giaybaoco.html"> Giấy báo có </a > </li>
           </ul>
         </li>
         <li class="treeview">
@@ -204,8 +151,8 @@
             <i class="treeview-indicator bx bx-chevron-down"></i>
           </a>
           <ul class="treeview-menu1">
-            <li> <a class="treeview-item" href="/assets/hethong/quantringuoidung.html"  >Sổ cái tài khoản</a > </li>
-            <li> <a class="treeview-item" href="layout_horizontal_sidebar_menu.html" >Sổ chi tiết tài khoản</a > </li>
+            <li > <a class="treeview-item" href="#"  id="openSoCaiModal">Sổ cái tài khoản</a > </li>
+            <li> <a class="treeview-item" href="#" id="openSoChiTietModal">Sổ chi tiết tài khoản</a > </li>
           </ul>
         </li>
         <li class="treeview">
@@ -215,10 +162,10 @@
             <i class="treeview-indicator bx bx-chevron-down"></i>
           </a>
           <ul class="treeview-menu1">
-            <li> <a class="treeview-item" href="/assets/hethong/quantringuoidung.html" > Báo cáo tổng hợp công nợ phải thu</a > </li>
-            <li> <a class="treeview-item" href="layout_horizontal_sidebar_menu.html" >Báo cáo tổng hợp công nợ phải chi</a > </li>
-              <li> <a class="treeview-item" href="layout_horizontal_sidebar_menu.html" >Báo cáo nợ phải thu quá hạn</a > </li>
-                <li> <a class="treeview-item" href="layout_horizontal_sidebar_menu.html" >Báo cáo nợ phải trả quá hạn</a > </li>
+            <li> <a class="treeview-item" href="../baocao/baocaotonghopcongnophaithu.html" > Báo cáo tổng hợp công nợ phải thu</a > </li>
+            <li> <a class="treeview-item" href="../baocao/baocaotonghopcongnophaichi.html" >Báo cáo tổng hợp công nợ phải chi</a > </li>
+              <li> <a class="treeview-item" href="../baocao/baocaonophaithuquahan.html" >Báo cáo nợ phải thu quá hạn</a > </li>
+                <li> <a class="treeview-item" href="../baocao/baocaonophaitraquahan.html" >Báo cáo nợ phải trả quá hạn</a > </li>
           </ul>
         </li>
       </ul>
@@ -226,7 +173,7 @@
     <main class="app-content">
         <div class="app-title">
             <ul class="app-breadcrumb breadcrumb side">
-                <li class="breadcrumb-item active"><a href="#"><b>Danh sách sản phẩm</b></a></li>
+                <li class="breadcrumb-item active"><a href="#"><b>Danh mục hàng hóa</b></a></li>
             </ul>
             <div id="clock"></div>
         </div>
@@ -234,62 +181,50 @@
             <div class="col-md-12">
                 <div class="tile">
                     <div class="tile-body">
-                        <div class="row element-button">
-                            <div class="col-sm-2">
-              
-                              <a class="btn btn-add btn-sm" href="form-add-san-pham.html" title="Thêm"><i class="fas fa-plus"></i>
-                                Tạo mới sản phẩm</a>
-                            </div>
-                            <div class="col-sm-2">
-                              <a class="btn btn-delete btn-sm nhap-tu-file" type="button" title="Nhập" onclick="myFunction(this)"><i
-                                  class="fas fa-file-upload"></i> Tải từ file</a>
-                            </div>
-              
-                            <div class="col-sm-2">
-                              <a class="btn btn-delete btn-sm print-file" type="button" title="In" onclick="myApp.printTable()"><i
-                                  class="fas fa-print"></i> In dữ liệu</a>
-                            </div>
-                            <div class="col-sm-2">
-                              <a class="btn btn-delete btn-sm print-file js-textareacopybtn" type="button" title="Sao chép"><i
-                                  class="fas fa-copy"></i> Sao chép</a>
-                            </div>
-              
-                            <div class="col-sm-2">
-                              <a class="btn btn-excel btn-sm" href="" title="In"><i class="fas fa-file-excel"></i> Xuất Excel</a>
-                            </div>
-                            <div class="col-sm-2">
-                              <a class="btn btn-delete btn-sm pdf-file" type="button" title="In" onclick="myFunction(this)"><i
-                                  class="fas fa-file-pdf"></i> Xuất PDF</a>
-                            </div>
-                            <div class="col-sm-2">
-                              <a class="btn btn-delete btn-sm" type="button" title="Xóa" onclick="myFunction(this)"><i
-                                  class="fas fa-trash-alt"></i> Xóa tất cả </a>
-                            </div>
-                          </div>
-                        <table class="table table-hover table-bordered" id="sampleTable">
+                      <div class="row element-button">
+                        <div class="col-sm-2">
+                          <button class="btn btn-add btn-sm" id="addBtnHH" title="Thêm"><i class="fas fa-plus"></i> Thêm mới</button>
+                        </div>
+          
+                        <div class="col-sm-2">
+                          <a class="btn btn-delete btn-sm print-file" type="button" title="In" onclick="myApp.printTable()"><i
+                              class="fas fa-print"></i> In dữ liệu</a>
+                        </div>
+                        <div class="col-sm-2">
+                          <a class="btn btn-delete btn-sm print-file js-textareacopybtn" type="button" title="Sao chép"><i
+                              class="fas fa-copy"></i> Sao chép</a>
+                        </div>
+          
+                        <div class="col-sm-2">
+                          <a class="btn btn-excel btn-sm" href="" title="In"><i class="fas fa-file-excel"></i> Xuất Excel</a>
+                        </div>
+                        <div class="col-sm-2">
+                          <a class="btn btn-delete btn-sm pdf-file" type="button" title="In" onclick="myFunction(this)"><i
+                              class="fas fa-file-pdf"></i> Xuất PDF</a>
+                        </div>
+                        <div class="col-sm-2">
+                          <a class="btn btn-delete btn-sm" type="button" title="Xóa" onclick="myFunction(this)"><i
+                              class="fas fa-trash-alt"></i> Xóa tất cả </a>
+                        </div>
+                      </div>
+                        <input type="text" id="myInput" onkeyup="myFunctionDMHH()" placeholder="Nhập mã hàng hóa hoặc tên hàng hóa để tìm kiếm..." style="margin-bottom: 12px;">
+                      <table class="table table-hover table-bordered" id="dmhhTable">
                             <thead>
                                 <tr>
                                     <th width="10"><input type="checkbox" id="all"></th>
-                                    <th>Mã sản phẩm</th>
-                                    <th>Tên sản phẩm</th>
-                                    <th>Ảnh</th>
-                                    <th>Số lượng</th>
-                                    <th>Tình trạng</th>
-                                    <th>Giá tiền</th>
-                                    <th>Danh mục</th>
+                                    <th>Mã hàng hóa</th>
+                                    <th>Tên hàng hóa</th>
+                                    <th>Đơn vị tính</th>
                                     <th>Chức năng</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
+                            <tbody id="dmhhTableBody">
+                                <!-- <tr>
                                     <td width="10"><input type="checkbox" name="check1" value="1"></td>
-                                    <td>71309005</td>
-                                    <td>Bàn ăn gỗ Theresa</td>
-                                    <td><img src="/img-sanpham/theresa.jpg" alt="" width="100px;"></td>
-                                    <td>40</td>
-                                    <td><span class="badge bg-success">Còn hàng</span></td>
-                                    <td>5.600.000 đ</td>
-                                    <td>Bàn ăn</td>
+                                    <td>ID</td>
+                                    <td>name</td>
+                                    <td>cấp tài khoản</td>
+                                    <td>tk cấp trên</td>
                                     <td><button class="btn btn-primary btn-sm trash" type="button" title="Xóa"
                                             onclick="myFunction(this)"><i class="fas fa-trash-alt"></i> 
                                         </button>
@@ -297,282 +232,311 @@
                       data-target="#ModalUP"><i class="fas fa-edit"></i></button>
                                        
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td width="10"><input type="checkbox" name="check1" value="1"></td>
-                                    <td>61304005</td>
-                                    <td>Bàn ăn Reno mặt đá</td>
-                                    <td><img src="/img-sanpham/reno.jpg" alt="" width="100px;"></td>
-                                    <td>70</td>
-                                    <td><span class="badge bg-success">Còn hàng</span></td>
-                                    <td>24.200.000 đ</td>
-                                    <td>Bàn ăn</td>
-                                    <td><button class="btn btn-primary btn-sm trash" type="button" title="Xóa"
-                                            onclick="myFunction(this)"><i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm edit" type="button" title="Sửa" id="show-emp" data-toggle="modal"
-                      data-target="#ModalUP"><i class="fas fa-edit"></i></button>
-                                       
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="10"><input type="checkbox" name="check1" value="1"></td>
-                                    <td>62304003</td>
-                                    <td>Bàn ăn Vitali mặt đá</td>
-                                    <td><img src="/img-sanpham/matda.jpg" alt="" width="100px;"></td>
-                                    <td>40</td>
-                                     <td><span class="badge bg-success">Còn hàng</span></td>
-                                    <td>33.235.000 đ</td>
-                                    <td>Bàn ăn</td>
-                                    <td><button class="btn btn-primary btn-sm trash" type="button" title="Xóa"
-                                            onclick="myFunction(this)"><i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm edit" type="button" title="Sửa" id="show-emp" data-toggle="modal"
-                      data-target="#ModalUP"><i class="fas fa-edit"></i></button>
-
-                                      
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="10"><input type="checkbox" name="check1" value="1"></td>
-                                    <td>72638003</td>
-                                    <td>Ghế ăn gỗ Theresa</td>
-                                    <td><img src="/img-sanpham/ghethera.jpg" alt="" width="100px;"></td>
-                                    <td>50</td>
-                                     <td><span class="badge bg-success">Còn hàng</span></td>
-                                    <td>950.000 đ</td>
-                                    <td>Ghế gỗ</td>
-                                    <td><button class="btn btn-primary btn-sm trash" type="button" title="Xóa"
-                                            onclick="myFunction(this)"><i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm edit" type="button" title="Sửa" id="show-emp" data-toggle="modal"
-                      data-target="#ModalUP"><i class="fas fa-edit"></i></button> 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="10"><input type="checkbox" name="check1" value="1"></td>
-                                    <td>72109004</td>
-                                    <td>Ghế làm việc Zuno</td>
-                                    <td><img src="/img-sanpham/zuno.jpg" alt="" width="100px;"></td>
-                                    <td>50</td>
-                                     <td><span class="badge bg-success">Còn hàng</span></td>
-                                    <td>3.800.000 đ</td>
-                                    <td>Ghế gỗ</td>
-                                    <td><button class="btn btn-primary btn-sm trash" type="button" title="Xóa"
-                                            onclick="myFunction(this)"><i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm edit" type="button" title="Sửa" id="show-emp" data-toggle="modal"
-                      data-target="#ModalUP"><i class="fas fa-edit"></i></button>
-                                       
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="10"><input type="checkbox" name="check1" value="1"></td>
-                                    <td>82716001</td>
-                                    <td>Ghế ăn Vitali</td>
-                                    <td><img src="/img-sanpham/vita.jpg" alt="" width="100px;"></td>
-                                    <td>55</td>
-                                     <td><span class="badge bg-success">Còn hàng</span></td>
-                                    <td>4.600.000 đ</td>
-                                    <td>Ghế gỗ</td>
-                                    <td><button class="btn btn-primary btn-sm trash" type="button" title="Xóa"
-                                            onclick="myFunction(this)"><i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm edit" type="button" title="Sửa" id="show-emp" data-toggle="modal"
-                      data-target="#ModalUP"><i class="fas fa-edit"></i></button>
-                                        
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="10"><input type="checkbox" name="check1" value="1"></td>
-                                    <td>72109001</td>
-                                    <td>Ghế ăn gỗ Lucy màu trắng</td>
-                                    <td><img src="/img-sanpham/lucy.jpg" alt="" width="100px;"></td>
-                                    <td>38</td>
-                                     <td><span class="badge bg-success">Còn hàng</span></td>
-                                    <td>1.100.000 đ</td>
-                                    <td>Ghế gỗ</td>
-                                    <td><button class="btn btn-primary btn-sm trash" type="button" title="Xóa"
-                                            onclick="myFunction(this)"><i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm edit" type="button" title="Sửa" id="show-emp" data-toggle="modal"
-                      data-target="#ModalUP"><i class="fas fa-edit"></i> </button>
-                                    
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="10"><input type="checkbox" name="check1" value="1"></td>
-                                    <td>71304041</td>
-                                    <td>Bàn ăn mở rộng Vegas</td>
-                                    <td><img src="/img-sanpham/vegas.jpg" alt="" width="100px;"></td>
-                                    <td>80</td>
-                                     <td><span class="badge bg-success">Còn hàng</span></td>
-                                    <td>21.550.000 đ</td>
-                                    <td>Bàn thông minh</td>
-                                    <td><button class="btn btn-primary btn-sm trash" type="button" title="Xóa"
-                                            onclick="myFunction(this)"><i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm edit" type="button" title="Sửa" id="show-emp" data-toggle="modal"
-                      data-target="#ModalUP"><i class="fas fa-edit"></i></button>
-                                      
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="10"><input type="checkbox" name="check1" value="1"></td>
-                                    <td>71304037</td>
-                                    <td>Bàn ăn mở rộng Gepa</td>
-                                    <td><img src="/img-sanpham/banan.jpg" alt="" width="100px;"></td>
-                                    <td>80</td>
-                                     <td><span class="badge bg-success">Còn hàng</span></td>
-                                    <td>16.770.000 đ</td>
-                                    <td>Bàn thông minh</td>
-                                    <td><button class="btn btn-primary btn-sm trash" type="button" title="Xóa"
-                                            onclick="myFunction(this)"><i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm edit" type="button" title="Sửa" id="show-emp" data-toggle="modal"
-                      data-target="#ModalUP"><i class="fas fa-edit"></i></button>
-                                       
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="10"><input type="checkbox" name="check1" value="1"></td>
-                                    <td>71304032</td>
-                                    <td>Bàn ăn mặt gốm vân đá Cera</td>
-                                    <td><img src="/img-sanpham/cera.jpg" alt="" width="100px;"></td>
-                                    <td>46</td>
-                                     <td><span class="badge bg-success">Còn hàng</span></td>
-                                    <td>20.790.000 đ</td>
-                                    <td>Bàn thông minh</td>
-                                    <td><button class="btn btn-primary btn-sm trash" type="button" title="Xóa"
-                                            onclick="myFunction(this)"><i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm edit" type="button" title="Sửa" id="show-emp" data-toggle="modal"
-                      data-target="#ModalUP"><i class="fas fa-edit"></i></button>
-                                      
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="10"><input type="checkbox" name="check1" value="1"></td>
-                                    <td>71338008</td>
-                                    <td>Bàn ăn mở rộng cao cấp Dolas</td>
-                                    <td><img src="/img-sanpham/dolas.jpg" alt="" width="100px;"></td>
-                                    <td>66</td>
-                                     <td><span class="badge bg-success">Còn hàng</span></td>
-                                    <td>22.650.000 đ</td>
-                                    <td>Bàn thông minh</td>
-                                    <td><button class="btn btn-primary btn-sm trash" type="button" title="Xóa"
-                                            onclick="myFunction(this)"><i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm edit" type="button" title="Sửa" id="show-emp" data-toggle="modal"
-                      data-target="#ModalUP"><i class="fas fa-edit"></i></button>
-                                        
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="10"><input type="checkbox" name="check1" value="1"></td>
-                                    <td>83826226</td>
-                                    <td>Tủ ly - tủ bát</td>
-                                    <td><img src="/img-sanpham/tu.jpg" alt="" width="100px;"></td>
-                                    <td>0</td>
-                                    <td><span class="badge bg-danger">Hét hàng</span></td>
-                                    <td>2.450.000 đ</td>
-                                    <td>Tủ</td>
-                                    <td><button class="btn btn-primary btn-sm trash" type="button" title="Xóa"
-                                            onclick="myFunction(this)"><i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm edit" type="button" title="Sửa" id="show-emp" data-toggle="modal"
-                      data-target="#ModalUP"><i class="fas fa-edit"></i></button>
-                                      
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="10"><input type="checkbox" name="check1" value="1"></td>
-                                    <td>83252001</td>
-                                    <td>Giường ngủ Thomas</td>
-                                    <td><img src="/img-sanpham/thomas.jpg" alt="" width="100px;"></td>
-                                    <td>73</td>
-                                     <td><span class="badge bg-success">Còn hàng</span></td>
-                                    <td>12.950.000 đ</td>
-                                    <td>Giường người lớn</td>
-                                    <td><button class="btn btn-primary btn-sm trash" type="button" title="Xóa"
-                                            onclick="myFunction(this)"><i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm edit" type="button" title="Sửa" id="show-emp" data-toggle="modal"
-                      data-target="#ModalUP"><i class="fas fa-edit"></i></button>
-                                      
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="10"><input type="checkbox" name="check1" value="1"></td>
-                                    <td>83252002</td>
-                                    <td>Giường ngủ Jimmy</td>
-                                    <td><img src="/img-sanpham/jimmy.jpg" alt="" width="100px;"></td>
-                                    <td>60</td>
-                                     <td><span class="badge bg-success">Còn hàng</span></td>
-                                    <td>16.320.000 đ</td>
-                                    <td>Giường người lớn</td>
-                                    <td><button class="btn btn-primary btn-sm trash" type="button" title="Xóa"
-                                            onclick="myFunction(this)"><i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm edit" type="button" title="Sửa" id="show-emp" data-toggle="modal"
-                      data-target="#ModalUP"><i class="fas fa-edit"></i></button>
-                                       
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="10"><input type="checkbox" name="check1" value="1"></td>
-                                    <td>83216008</td>
-                                    <td>Giường ngủ Tara chân gỗ</td>
-                                    <td><img src="/img-sanpham/tare.jpg" alt="" width="100px;"></td>
-                                    <td>65</td>
-                                     <td><span class="badge bg-success">Còn hàng</span></td>
-                                    <td>19.600.000 đ</td>
-                                    <td>Giường người lớn</td>
-                                    <td><button class="btn btn-primary btn-sm trash" type="button" title="Xóa"
-                                            onclick="myFunction(this)"><i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm edit" type="button" title="Sửa" id="show-emp" data-toggle="modal"
-                      data-target="#ModalUP"><i class="fas fa-edit"></i></button>
-                                       
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="10"><input type="checkbox" name="check1" value="1"></td>
-                                    <td>83216006</td>
-                                    <td>Giường ngủ Kara 1.6x2m</td>
-                                    <td><img src="/img-sanpham/kara.jpg" alt="" width="100px;"></td>
-                                    <td>60</td>
-                                     <td><span class="badge bg-success">Còn hàng</span></td>
-                                    <td>14.500.000 đ</td>
-                                    <td>Giường người lớn</td>
-                                    <td><button class="btn btn-primary btn-sm trash" type="button" title="Xóa"
-                                            onclick="myFunction(this)"><i class="fas fa-trash-alt"></i>
-                                        </button>
-                                        <button class="btn btn-primary btn-sm edit" type="button" title="Sửa" id="show-emp" data-toggle="modal"
-                      data-target="#ModalUP"><i class="fas fa-edit"></i></button>
-                                   
-                                    </td>
-                                </tr>
+                                </tr> -->
                             </tbody>
                         </table>
-                    </div>
-                </div>
+                        <div id="paginationHH" class="mt-3"></div>
+                        
+
+
             </div>
         </div>
     </main>
-    <script src="js/jquery-3.2.1.min.js"></script>
+
+    <div class="modal fade" id="ModalEditHH" tabindex="-1" aria-labelledby="ModalUPLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form id="editFormHH">
+            <div class="modal-header">
+              <h5 class="modal-title" id="ModalUPLabel">Sửa hàng hóa</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <input type="text" id="MaHHEdit" disabled class="form-control mb-2">
+              <input type="text" id="TenHHEdit" class="form-control mb-2" required>
+              <input type="text" id="DVTEdit" class="form-control mb-2" required>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Lưu</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal thêm Danh mục hàng hóa -->
+<!-- <div class="modal fade" id="ModalAddHH" tabindex="-1">
+  <div class="modal-dialog">
+    <form id="addFormHH" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Thêm hàng hóa</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-2">
+          <label for="MaHHAdd">Mã thàng hóa</label>
+          <input type="text" id="MaHHAdd" class="form-control" required>
+        </div>
+        <div class="mb-2">
+          <label for="TenHHAdd">Tên hàng hóa</label>
+          <input type="text" id="TenHHAdd" class="form-control" required>
+        </div>
+        <div class="mb-2">
+          <label for="DVTAdd">Đơn vị tính</label>
+          <input type="text" id="DVTAdd" class="form-control" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success">Thêm mới</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+      </div>
+    </form>
+  </div>
+</div> -->
+
+<div class="modal fade" id="ModalAddHH" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
+data-keyboard="false">
+<div class="modal-dialog modal-dialog-centered" role="document">
+  <form id="addFormHH" class="modal-content">
+      <div class="modal-body">
+        <div class="row">
+          <div class="form-group  col-md-12">
+            <span class="thong-tin-thanh-toan">
+              <h5>Thêm hàng hóa</h5>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-md-12">
+            <label class="control-label">Mã hàng hóa</label>
+            <input class="form-control" id="MaHHAdd" type="text" required>
+          </div>
+        </div>
+        <div class="row"> 
+          <div class="form-group col-md-12">
+            <label class="control-label">Tên hàng hóa</label>
+            <input class="form-control" id="TenHHAdd" type="text" required>
+          </div>
+        </div>
+        <div class="row"> 
+          <div class="form-group col-md-12">
+            <label class="control-label">Đơn vị tính</label>
+            <input class="form-control" id="DVTAdd" type="text" required>
+          </div>
+        </div>
+        <BR>
+
+        <button class="btn btn-save" type="submit">Thêm mới</button>
+        <button class="btn btn-cancel" data-dismiss="modal">Hủy</button>
+        <BR>
+      </div>
+      <div class="modal-footer">
+      </div>
+  </form>
+</div>
+</div>
+
+ 
+<!-- MODAL SỔ CÁI TÀI KHOẢN-->
+<div class="modal fade" id="socaiModal" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
+data-keyboard="false">
+<div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-content">
+
+    <div class="modal-body">
+      <div class="row">
+        <div class="form-group  col-md-12">
+          <span class="thong-tin-thanh-toan">
+            <h5>Sổ cái tài khoản</h5>
+          </span>
+        </div>
+      </div>
+      <div class="row" >
+        <div class="form-group col-md-6">
+          <label class="control-label">Từ ngày</label>
+          <input class="form-control" type="date" id="startDate">
+        </div>
+        <BR>
+        <div class="form-group col-md-6">
+          <label class="control-label">Đến ngày</label>
+          <input class="form-control" type="date" id="endDate">
+        </div>
+        <BR>
+        <div class="form-group  col-md-6">
+          <label for="exampleSelect1" class="control-label">Mã tài khoản</label>
+          <select class="form-control" id="maTK">
+            <option value="131">131</option>
+            <option value="331">331</option>
+          </select>
+        </div>
+      </div>
+      <BR>
+      <button class="btn btn-save" type="button" id="confirmBtn">Xác nhận</button>
+      <button class="btn btn-cancel" data-dismiss="modal">Hủy</button>
+      <!-- <a class="btn btn-cancel" data-dismiss="modal" href="#">Hủy bỏ</a> -->
+      <BR>
+    </div>
+    <div class="modal-footer">
+    </div>
+  </div>
+</div>
+</div>
+
+  <!-- MODAL SỔ CÁI CHI TIẾT TÀI KHOẢN-->
+  <div class="modal fade" id="socaiModalSCT" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
+  data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+  
+      <div class="modal-body">
+        <div class="row">
+          <div class="form-group  col-md-12">
+            <span class="thong-tin-thanh-toan">
+              <h5>Sổ cái chi tiết tài khoản</h5>
+            </span>
+          </div>
+        </div>
+        <div class="row" >
+          <div class="form-group col-md-6">
+            <label class="control-label">Từ ngày</label>
+            <input class="form-control" type="date" id="startDate">
+          </div>
+          <BR>
+          <div class="form-group col-md-6">
+            <label class="control-label">Đến ngày</label>
+            <input class="form-control" type="date" id="endDate">
+          </div>
+          <BR>
+          <div class="form-group  col-md-6">
+            <label for="exampleSelect1" class="control-label">Mã tài khoản</label>
+            <select class="form-control" id="maTK">
+              <option value="131">131</option>
+              <option value="331">331</option>
+            </select>
+          </div>
+        </div>
+        <BR>
+        <button class="btn btn-save" type="button" id="confirmBtnSCT">Xác nhận</button>
+        <button class="btn btn-cancel" data-dismiss="modal">Hủy</button>
+        <!-- <a class="btn btn-cancel" data-dismiss="modal" href="#">Hủy bỏ</a> -->
+        <BR>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+  </div>
+
+    <script src="../../js/jquery-3.2.1.min.js"></script>
     <!--===============================================================================================-->
-    <script src="js/popper.min.js"></script>
+    <script src="../../js/popper.min.js"></script>
     <script src="https://unpkg.com/boxicons@latest/dist/boxicons.js"></script>
     <!--===============================================================================================-->
-    <script src="js/bootstrap.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
     <!--===============================================================================================-->
-    <script src="js/main.js"></script>
+    <script src="/server.js"></script>
     <!--===============================================================================================-->
-    <script src="js/plugins/pace.min.js"></script>
+    <script src="../../js/plugins/pace.min.js"></script>
     <!--===============================================================================================-->
-    <script type="text/javascript" src="js/plugins/chart.js"></script>
+        <script type="text/javascript" src="js/plugins/chart.js"></script>
     <!--===============================================================================================-->
+<script>
+      document.getElementById('openSoCaiModal').addEventListener('click', function (e) {
+        e.preventDefault(); // Ngăn chặn hành vi mặc định
+        $('#socaiModal').modal('show'); // Sử dụng phương thức của Bootstrap để hiển thị modal
+      });
+
+      document.getElementById('confirmBtn').addEventListener('click', function () {
+        const start = document.getElementById('startDate').value;
+        const end = document.getElementById('endDate').value;
+        const matk = document.getElementById('maTK').value;
+
+        let targetPage = "";
+
+        if (matk === "131") {
+          targetPage = "./Pages/sosach/socaitaikhoanthu.html";
+        } else if (matk === "331") {
+          targetPage = "./Pages/sosach/socaitaikhoantra.html";
+        }
+
+        // Mở trang mới trong tab mới với query string
+        if (targetPage) {
+          const url = `${targetPage}?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&matk=${encodeURIComponent(matk)}`;
+          window.open(url, '_blank');
+        }
+      });
+    </script>
+
+<script>
+  document.getElementById('openSoChiTietModal').addEventListener('click', function (e) {
+    e.preventDefault(); // Ngăn chuyển trang ngay
+    $('#socaiModalSCT').modal('show'); // Sử dụng phương thức của Bootstrap để hiển thị modal
+  });
+
+  document.getElementById('confirmBtnSCT').addEventListener('click', function () {
+    const start = document.getElementById('startDate').value;
+    const end = document.getElementById('endDate').value;
+    const matk = document.getElementById('maTK').value;
+
+    let targetPage = "";
+
+    if (matk === "131") {
+      targetPage = "./Pages/sosach/sochitiettaikhoanthu.html";
+    } else if (matk === "331") {
+      targetPage = "./Pages/sosach/sochitiettaikhoantra.html";
+    }
+
+    // Mở trang mới trong tab mới với query string
+    if (targetPage) {
+      const url = `${targetPage}?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&matk=${encodeURIComponent(matk)}`;
+      window.open(url, '_blank');
+    }
+  });
+</script>
+    <!-- Các script -->
+  <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
+    <script>
+      // Đảm bảo DOM đã sẵn sàng
+      $(document).ready(function () {
+        $("#addBtnHH").click(function () {
+        $('#ModalAddHH').modal('show'); // Cho Bootstrap 4
+        });
+      });
+  
+
+      document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('editFormHH').addEventListener('submit', async function (e) {
+          e.preventDefault();
+    
+          const mahh = document.getElementById('MaHHEdit').value;
+    
+          const data = {
+            TenHH: document.getElementById('TenHHEdit').value,
+            DVT: document.getElementById('DVTEdit').value
+          };
+    
+          const response = await fetch(`/api/dmhh/${mahh}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+    
+          if (response.ok) {
+            $('#ModalEditHH').modal('hide');
+            alert('Cập nhật thành công!');
+            loadDMHH(); // Load lại dữ liệu sau khi cập nhật
+          } else {
+            const err = await response.text();
+            alert('Lỗi cập nhật: ' + err);
+          }
+        });
+      });
+    </script>
+
     <script type="text/javascript">
       document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".treeview > a").forEach(function (element) {

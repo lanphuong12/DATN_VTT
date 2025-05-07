@@ -431,6 +431,14 @@ app.put('/api/dmkh/:makh', (req, res) => {
         });
 });
 
+// API xóa thông tin dmkh
+app.delete('/api/dmkh/:makh', (req, res) => {
+    db.run("DELETE FROM DMKH WHERE MaKH = ?", [req.params.makh], err => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true });
+    });
+});
+
 // BẢNG HÓA ĐƠN GIÁ TRỊ GIA TĂNG (HDHH) - HDGTGT
 // API: Lấy danh sách dữ liệu bảng HDHH
 app.get('/api/hdgtgt', (req, res) => {
