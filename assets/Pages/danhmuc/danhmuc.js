@@ -126,7 +126,7 @@ function editDMTK(matk) {
   document.getElementById('CapTKEdit').value = item.CapTK;
   document.getElementById('TKCapTrenEdit').value = item.TKCapTren || "";
 
-  $('#ModalUP').modal('show');
+  $('#ModalEditTK').modal('show');
 }
 
 function updateDMTK() {

@@ -737,7 +737,151 @@ app.get('/api/socaiphaithu', (req, res) => {
       });
     });
   });
+
+  // BẢNG GIẤY BÁO CÓ - GBC
+// API: Lấy danh sách dữ liệu bảng GBC
+app.get('/api/gbc', (req, res) => {
+    db.all("SELECT * FROM GiayBao WHERE SoCT LIKE 'BC%' ", [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+// API: Lấy chi tiết giaybao theo SoCT kèm thông tin CTPhieu từ CTPhieu và thông tin khách hàng từ DMKH
+app.get('/api/gbc/:soctgbc', (req, res) => {
+    const soct = req.params.soctgbc;
   
+    const sql1 = `SELECT * FROM GiayBao WHERE SoCT = ?`;
+    db.get(sql1, [soct], (err1, giaybao) => {
+      if (err1) return res.status(500).json({ error: err1.message });
+      if (!giaybao) return res.status(404).json({ error: 'Không tìm thấy Giấy báo' });
+  
+      const sql2 = `SELECT * FROM CTPhieu WHERE SoCT = ?`;
+      db.all(sql2, [soct], (err2, ctphieu) => {
+        if (err2) return res.status(500).json({ error: err2.message });
+  
+        const sql3 = `SELECT * FROM DMKH WHERE MaKH = ?`;
+        db.get(sql3, [giaybao.MaKH], (err3, khachhang) => {
+          if (err3) return res.status(500).json({ error: err3.message });
+  
+          res.json({
+            giaybao: giaybao,
+            ctphieu: ctphieu,
+            khachhang: khachhang
+          });
+        });
+      });
+    });
+  });
+  
+  
+  // BẢNG GIẤY BÁO NỢ - GBN
+// API: Lấy danh sách dữ liệu bảng GBN
+app.get('/api/gbn', (req, res) => {
+    db.all("SELECT * FROM GiayBao WHERE SoCT LIKE 'BN%' ", [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+// API: Lấy chi tiết giaybao theo SoCT kèm thông tin CTPhieu từ CTPhieu và thông tin khách hàng từ DMKH
+app.get('/api/gbn/:soctgbn', (req, res) => {
+    const soct = req.params.soctgbn;
+  
+    const sql1 = `SELECT * FROM GiayBao WHERE SoCT = ?`;
+    db.get(sql1, [soct], (err1, giaybao) => {
+      if (err1) return res.status(500).json({ error: err1.message });
+      if (!giaybao) return res.status(404).json({ error: 'Không tìm thấy Giấy báo' });
+  
+      const sql2 = `SELECT * FROM CTPhieu WHERE SoCT = ?`;
+      db.all(sql2, [soct], (err2, ctphieu) => {
+        if (err2) return res.status(500).json({ error: err2.message });
+  
+        const sql3 = `SELECT * FROM DMKH WHERE MaKH = ?`;
+        db.get(sql3, [giaybao.MaKH], (err3, khachhang) => {
+          if (err3) return res.status(500).json({ error: err3.message });
+  
+          res.json({
+            giaybao: giaybao,
+            ctphieu: ctphieu,
+            khachhang: khachhang
+          });
+        });
+      });
+    });
+  });
+
+  // BẢNG PHIẾU THU TIỀN - PTT
+// API: Lấy danh sách dữ liệu bảng PTT
+app.get('/api/ptt', (req, res) => {
+    db.all("SELECT * FROM PhieuTC WHERE SoCT LIKE 'PT%' ", [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+// API: Lấy chi tiết PhieuTC theo SoCT kèm thông tin CTPhieu từ CTPhieu và thông tin khách hàng từ DMKH
+app.get('/api/ptt/:soctptt', (req, res) => {
+    const soct = req.params.soctptt;
+  
+    const sql1 = `SELECT * FROM PhieuTC WHERE SoCT = ?`;
+    db.get(sql1, [soct], (err1, phieutc) => {
+      if (err1) return res.status(500).json({ error: err1.message });
+      if (!phieutc) return res.status(404).json({ error: 'Không tìm thấy phiếu thu' });
+  
+      const sql2 = `SELECT * FROM CTPhieu WHERE SoCT = ?`;
+      db.all(sql2, [soct], (err2, ctphieu) => {
+        if (err2) return res.status(500).json({ error: err2.message });
+  
+        const sql3 = `SELECT * FROM DMKH WHERE MaKH = ?`;
+        db.get(sql3, [phieutc.MaKH], (err3, khachhang) => {
+          if (err3) return res.status(500).json({ error: err3.message });
+  
+          res.json({
+            phieutc: phieutc,
+            ctphieu: ctphieu,
+            khachhang: khachhang
+          });
+        });
+      });
+    });
+  });
+
+  // BẢNG PHIẾU CHI TIỀN - PCT
+// API: Lấy danh sách dữ liệu bảng PCT
+app.get('/api/pct', (req, res) => {
+    db.all("SELECT * FROM PhieuTC WHERE SoCT LIKE 'PC%' ", [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+// API: Lấy chi tiết PhieuTC theo SoCT kèm thông tin CTPhieu từ CTPhieu và thông tin khách hàng từ DMKH
+app.get('/api/pct/:soctpct', (req, res) => {
+    const soct = req.params.soctpct;
+  
+    const sql1 = `SELECT * FROM PhieuTC WHERE SoCT = ?`;
+    db.get(sql1, [soct], (err1, phieutc) => {
+      if (err1) return res.status(500).json({ error: err1.message });
+      if (!phieutc) return res.status(404).json({ error: 'Không tìm thấy phiếu thu' });
+  
+      const sql2 = `SELECT * FROM CTPhieu WHERE SoCT = ?`;
+      db.all(sql2, [soct], (err2, ctphieu) => {
+        if (err2) return res.status(500).json({ error: err2.message });
+  
+        const sql3 = `SELECT * FROM DMKH WHERE MaKH = ?`;
+        db.get(sql3, [phieutc.MaKH], (err3, khachhang) => {
+          if (err3) return res.status(500).json({ error: err3.message });
+  
+          res.json({
+            phieutc: phieutc,
+            ctphieu: ctphieu,
+            khachhang: khachhang
+          });
+        });
+      });
+    });
+  });
 // Khởi động server
 app.listen(3000, () => {
     console.log('Server chạy tại http://localhost:3000');

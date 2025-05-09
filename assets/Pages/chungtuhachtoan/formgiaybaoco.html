@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>GIẤY BÁO CÓ</title>
+  <style>
+    body {
+      font-family: "Times New Roman", serif;
+      margin: 40px;
+    }
+    .center { text-align: center; }
+    .right { text-align: right; }
+    .bold { font-weight: bold; }
+    table { width: 100%; border-collapse: collapse; }
+    td, th { padding: 4px; vertical-align: top; }
+    .bordered td, .bordered th { border: 1px solid black; }
+    .signature td {
+      text-align: center;
+      height: 100px;
+      vertical-align: bottom;
+    }
+    .italic { font-style: italic; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <table>
+    <tr>
+      <td style="width: 20%;">
+        <img src="../../resources/images/logo.jpg" alt="Logo" style="width: 100px;">
+      </td>
+      <td style="width: 55%;">
+        <div class="bold">CÔNG TY TNHH SẢN XUẤT VÀ THƯƠNG MẠI HÙNG LONG</div>
+        Địa chỉ: thôn Tráng Vũ - xã Đồng Than - huyện Yên Mỹ - tỉnh Hưng Yên<br>
+        Mã số thuế: 0900581808
+      </td>
+    </tr>
+  </table>
+
+  <h2 class="center">GIẤY BÁO CÓ</h2>
+
+  <!-- Thông tin chung -->
+  <table>
+    <tr>
+      <td class="center">Ngày: <b><span id="ngayct"></span></b></td>
+    <tr>
+        <td class="center">Số: <b><span id="soct"></span></b></td>
+    </tr>
+    <tr>
+      <td colspan="2">Đối tác: <b><span id="tenkh"></span></b></td>
+    </tr>
+    <tr>
+      <td colspan="2">Địa chỉ: <span id="diachi"></span></td>
+    </tr>
+    <tr>
+      <td colspan="2">Số tiền: <b><span id="sotien"></span></b> </td>
+    </tr>
+    <tr>
+        <td>Bằng chữ: <b><span id="sotienbangchu"></span></b></td>
+      </tr>
+  </table>
+
+  <br>
+
+  <!-- Bảng hạch toán -->
+  <table class="bordered" >
+    <thead>
+      <tr class="bold center">
+        <th>Diễn giải</th>
+        <th>Số tài khoản nợ</th>
+        <th>Số tài khoản có</th>
+        <th>Số tiền</th>
+      </tr>
+    </thead>
+    
+    <tbody id="ctphieu-body">
+      <!-- dữ liệu từ API sẽ hiển thị ở đây -->
+    </tbody>
+
+  </table>
+
+  <br><br>
+
+  <!-- Chữ ký -->
+  <table class="signature">
+    <tr class="bold">
+        <td>Giám đốc<br><span class="italic">(Ký, họ tên, đóng dấu)</span></td>
+        <td>Kế toán trưởng<br><span class="italic">(Ký, họ tên)</span></td>
+      <td>Người nộp tiền<br><span class="italic">(Ký, họ tên)</span></td>
+      <td>Người lập phiếu<br><span class="italic">(Ký, họ tên)</span></td>
+      <td>Thủ quỹ<br><span class="italic">(Ký, họ tên)</span></td>
+      
+    </tr>
+    <tr>
+      <td><b>Vũ Xuân Quân</b></td>
+      <td><b>Bùi Thị Nở</b></td>
+      <td><b></b></td>
+      <td><b></b></td>
+      <td><b></b></td>
+    </tr>
+  </table>
+
+  <script>
+function convertNumberToWords(number) {
+    const units = ['', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
+    const thousands = ['', 'nghìn', 'triệu', 'tỷ'];
+
+    if (number === 0) return 'Không đồng';
+
+    let result = '';
+    let partCount = 0;
+
+    while (number > 0) {
+        let part = number % 1000;
+        if (part > 0) {
+            const partWords = convertPartToWords(part, partCount > 0);
+            result = partWords + (thousands[partCount] ? ' ' + thousands[partCount] : '') + ' ' + result;
+        }
+        number = Math.floor(number / 1000);
+        partCount++;
+    }
+
+    return capitalizeFirstLetter(result.trim()) + ' đồng';
+}
+
+function convertPartToWords(part) {
+    const units = ['', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
+    const tens = ['', 'mười', 'hai mươi', 'ba mươi', 'bốn mươi', 'năm mươi', 'sáu mươi', 'bảy mươi', 'tám mươi', 'chín mươi'];
+
+    let result = '';
+
+    const hundred = Math.floor(part / 100);
+    const ten = Math.floor((part % 100) / 10);
+    const unit = part % 10;
+
+    if (hundred > 0) {
+        result += units[hundred] + ' trăm ';
+    }
+
+    if (ten > 0) {
+        result += tens[ten] + ' ';
+    } else if (hundred > 0 && unit > 0) {
+        result += 'lẻ ';
+    }
+
+    if (unit > 0) {
+        if (ten > 1 && unit === 1) {
+            result += 'mốt';
+        } else if (ten > 0 && unit === 5) {
+            result += 'lăm';
+        } else {
+            result += units[unit];
+        }
+    }
+
+    return result.trim();
+}
+
+function capitalizeFirstLetter(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const soct = urlParams.get('soct');
+
+    fetch(`/api/gbc/${soct}`)
+      .then(res => res.json())
+      .then(data => {
+        // Hiển thị thông tin Giấy Báo
+        const g = data.phieutc;
+        document.getElementById('soct').textContent = g.SoCT;
+        document.getElementById('ngayct').textContent = g.NgayCT;
+
+        // Hiển thị thông tin khách hàng
+        const kh = data.khachhang;
+        document.getElementById('tenkh').textContent = kh.TenKH;
+        document.getElementById('diachi').textContent = kh.DiaChi || '';
+        // Ghi số tiền đầu tiên vào phần tử có id='sotienfirst'
+        const p = data.ctphieu;
+        let tienDauTien = tienDauTien = Number(g.SoTien);
+        document.getElementById('sotien').textContent = tienDauTien.toLocaleString();
+
+        // Chuyển số tiền thanh toán thành chữ
+        const sotienbangchu = convertNumberToWords(tienDauTien);
+        document.getElementById('sotienbangchu').textContent = sotienbangchu;
+
+        // Hiển thị bảng chi tiết phiếu
+        const tbody = document.getElementById('ctphieu-body');
+        data.ctphieu.forEach(item => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${item.NoiDung}</td>
+            <td>${item.TKNo}</td>
+            <td>${item.TKCo}</td>
+            <td>${Number(item.SoTien).toLocaleString()}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      })
+      .catch(err => {
+        alert("Lỗi khi lấy dữ liệu: " + err.message);
+        console.error(err);
+      });
+  </script>
+
+</body>
+</html>

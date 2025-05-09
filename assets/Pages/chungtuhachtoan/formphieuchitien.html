@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>PHIẾU CHI TIỀN</title>
+  <style>
+    body {
+      font-family: Times New Roman, serif;
+      margin: 40px;
+    }
+    .center { text-align: center; }
+    .right { text-align: right; }
+    .bold { font-weight: bold; }
+    table { width: 100%; border-collapse: collapse; }
+    .signatures td {
+      height: 100px;
+      vertical-align: top;
+      text-align: center;
+    }
+    .bordered { border: 1px solid black; padding: 4px; }
+    .header, .footer {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+    .company-info {
+      text-align: left;
+      font-size: 14px;
+    }
+    .national-title {
+      text-align: right;
+      font-size: 14px;
+      text-align: center;
+    }
+    .national-title b {
+      display: block;
+    }
+    .national-title p {
+      width: 220px;
+      margin-left: auto;
+      margin-top: 2px;
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+    <div class="header">
+        <div class="company-info">
+          <strong>CÔNG TY TNHH SẢN XUẤT VÀ THƯƠNG MẠI HÙNG LONG</strong><br />
+          <strong>Địa chỉ: thôn Tráng Vũ - xã Đồng Than - huyện Yên Mỹ - tỉnh Hưng Yên</strong><br />
+          <strong>Mã số thuế: 0900581808</strong>
+        </div>
+        <div class="national-title">
+            <strong>Mẫu số 01 - TT</strong><br />
+          <p style="font-style: italic">Ban hành kèm theo thông tư số</p>
+          <p style="font-style: italic">200/2014/TT-BTC ngày</p>
+          <p style="font-style: italic">22/12/2014 của Bộ Tài chính</p>
+        </div>
+      </div>
+
+  <h2 class="center">PHIẾU CHI TIỀN</h2>
+  
+<table style="width: 100%;">
+    <tr>
+        <td style="width: 50%; text-align: right;" >
+            Ngày: <b> <span id="ngayct"></span> </b>
+        </td>
+        <td style="width: 20%; text-align: right;" >
+        </td>
+        <td style="width: 20%; text-align: left;" >
+            Quyển sổ: ................
+        </td>
+  </tr>
+  <tr style="height: 7px;">
+    
+</tr>
+  <tr>
+    <td style="width: 50%; text-align: right;" >
+    </td>
+    <td style="width: 20%; text-align: right;" >
+    </td>
+    <td style="width: 20%; text-align: left;" >
+        Số: <b> <span id="soct"></span> </b>
+    </td>
+</tr>
+<tr>
+    <td style="width: 50%; text-align: right;" >
+    </td>
+    <td style="width: 20%; text-align: right;" >
+    </td>
+    <td style="width: 20%; text-align: left;" >
+        Nợ: <b>331</b>
+    </td>
+</tr>
+<tr>
+    <td style="width: 50%; text-align: right;" >
+    </td>
+    <td style="width: 20%; text-align: right;" >
+    </td>
+    <td style="width: 20%; text-align: left;" >
+        Có: <b>131</b>
+    </td>
+</tr>
+</table>
+
+  <br>
+  <p>Họ và tên người nộp tiền: <b> <span id="tenkh"></span> </b></p>
+  <p>Địa chỉ: <span id="diachi"></span> </p>
+  <p>Lý do: <span id="lydo"></span> </p>
+  <p>Số tiền: <b> <span id="sotien"></span> </b></p>
+  <p>Viết bằng chữ: <b> <span id="sotienbangchu"></span> </b></p>
+  <p>Kèm theo: 1 chứng từ gốc</p>
+
+  <br>
+  <table >
+    <tr>
+      <td><b>Giám đốc</b><br><i>(Ký, họ tên, đóng dấu)</i></td>
+      <td><b>Kế toán trưởng</b><br><i>(Ký, họ tên)</i></td>
+      <td><b>Người nộp tiền</b><br><i>(Ký, họ tên)</i></td>
+      <td><b>Người lập phiếu</b><br><i>(Ký, họ tên)</i></td>
+      <td><b>Thủ quỹ</b><br><i>(Ký, họ tên)</i></td>
+    </tr>
+    <tr style=" vertical-align: bottom; height: 100px;">
+      <td><b>Vũ Xuân Quân</b></td>
+      <td><b>Bùi Thị Nở</b></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr style=" vertical-align: bottom; height: 40px;">
+        <td colspan="5" style=" text-align: left;"><b>Đã nhận đủ số tiền (Viết bằng chữ): <span id="sotienbangchu2"></span></b></td>
+    </tr>
+  </table>
+
+  
+  <script>
+    function convertNumberToWords(number) {
+        const units = ['', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
+        const thousands = ['', 'nghìn', 'triệu', 'tỷ'];
+    
+        if (number === 0) return 'Không đồng';
+    
+        let result = '';
+        let partCount = 0;
+    
+        while (number > 0) {
+            let part = number % 1000;
+            if (part > 0) {
+                const partWords = convertPartToWords(part, partCount > 0);
+                result = partWords + (thousands[partCount] ? ' ' + thousands[partCount] : '') + ' ' + result;
+            }
+            number = Math.floor(number / 1000);
+            partCount++;
+        }
+    
+        return capitalizeFirstLetter(result.trim()) + ' đồng';
+    }
+    
+    function convertPartToWords(part) {
+        const units = ['', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
+        const tens = ['', 'mười', 'hai mươi', 'ba mươi', 'bốn mươi', 'năm mươi', 'sáu mươi', 'bảy mươi', 'tám mươi', 'chín mươi'];
+    
+        let result = '';
+    
+        const hundred = Math.floor(part / 100);
+        const ten = Math.floor((part % 100) / 10);
+        const unit = part % 10;
+    
+        if (hundred > 0) {
+            result += units[hundred] + ' trăm ';
+        }
+    
+        if (ten > 0) {
+            result += tens[ten] + ' ';
+        } else if (hundred > 0 && unit > 0) {
+            result += 'lẻ ';
+        }
+    
+        if (unit > 0) {
+            if (ten > 1 && unit === 1) {
+                result += 'mốt';
+            } else if (ten > 0 && unit === 5) {
+                result += 'lăm';
+            } else {
+                result += units[unit];
+            }
+        }
+    
+        return result.trim();
+    }
+    
+    function capitalizeFirstLetter(str) {
+        if (!str) return '';
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+    
+        const urlParams = new URLSearchParams(window.location.search);
+        const soct = urlParams.get('soct');
+    
+        fetch(`/api/pct/${soct}`)
+          .then(res => res.json())
+          .then(data => {
+            // Hiển thị thông tin Giấy Báo
+            const g = data.phieutc;
+            document.getElementById('soct').textContent = g.SoCT;
+            document.getElementById('ngayct').textContent = g.NgayCT;
+            document.getElementById('lydo').textContent = g.LyDo;
+    
+            // Hiển thị thông tin khách hàng
+            const kh = data.khachhang;
+            document.getElementById('tenkh').textContent = kh.TenKH;
+            document.getElementById('diachi').textContent = kh.DiaChi || '';
+
+            // Ghi số tiền đầu tiên vào phần tử có id='sotienfirst'
+            let tienDauTien = 0
+            if (data.ctphieu.length > 0) {
+              tienDauTien = Number(data.ctphieu[0].SoTien);
+              document.getElementById('sotien').textContent = tienDauTien.toLocaleString();
+            }
+
+    
+            // Chuyển số tiền thanh toán thành chữ
+            const sotienbangchu = convertNumberToWords(tienDauTien);
+            document.getElementById('sotienbangchu').textContent = sotienbangchu;
+            document.getElementById('sotienbangchu2').textContent = sotienbangchu;
+            // Hiển thị bảng chi tiết phiếu
+            // const tbody = document.getElementById('ctphieu-body');
+            // data.ctphieu.forEach(item => {
+            //   const row = document.createElement('tr');
+            //   row.innerHTML = `
+            //     <td>${item.NoiDung}</td>
+            //     <td>${item.TKNo}</td>
+            //     <td>${item.TKCo}</td>
+            //     <td>${Number(item.SoTien).toLocaleString()}</td>
+            //   `;
+            //   tbody.appendChild(row);
+            // });
+          })
+          .catch(err => {
+            alert("Lỗi khi lấy dữ liệu: " + err.message);
+            console.error(err);
+          });
+  </script>
+
+</body>
+</html>

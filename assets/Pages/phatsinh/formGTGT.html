@@ -169,53 +169,64 @@
   <script>
     // Hàm chuyển số thành chữ
     function convertNumberToWords(number) {
-        const units = ['', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
-        const tens = ['', 'mười', 'hai mươi', 'ba mươi', 'bốn mươi', 'năm mươi', 'sáu mươi', 'bảy mươi', 'tám mươi', 'chín mươi'];
-        const thousands = ['', 'nghìn', 'triệu', 'tỷ'];
+    const units = ['', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
+    const thousands = ['', 'nghìn', 'triệu', 'tỷ'];
 
-        if (number === 0) return 'không';
+    if (number === 0) return 'Không đồng';
 
-        let result = '';
-        let partCount = 0;
+    let result = '';
+    let partCount = 0;
 
-        while (number > 0) {
-            let part = number % 1000;
-            if (part > 0) {
-                result = convertPartToWords(part) + (thousands[partCount] ? ' ' + thousands[partCount] : '') + ' ' + result;
-            }
-            number = Math.floor(number / 1000);
-            partCount++;
+    while (number > 0) {
+        let part = number % 1000;
+        if (part > 0) {
+            const partWords = convertPartToWords(part, partCount > 0);
+            result = partWords + (thousands[partCount] ? ' ' + thousands[partCount] : '') + ' ' + result;
         }
-
-        return result.trim();
+        number = Math.floor(number / 1000);
+        partCount++;
     }
 
-    function convertPartToWords(part) {
-        const units = ['', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
-        const tens = ['', 'mười', 'hai mươi', 'ba mươi', 'bốn mươi', 'năm mươi', 'sáu mươi', 'bảy mươi', 'tám mươi', 'chín mươi'];
-        
-        let result = '';
-        
-        const hundred = Math.floor(part / 100);
-        const ten = Math.floor((part % 100) / 10);
-        const unit = part % 10;
-        
-        if (hundred > 0) {
-            result += units[hundred] + ' trăm ';
-        }
-        
-        if (ten > 0) {
-            result += tens[ten] + ' ';
-        } else if (ten === 0 && (unit > 0 || hundred > 0)) {
-            result += 'lẻ ';
-        }
-        
-        if (unit > 0) {
+    return capitalizeFirstLetter(result.trim()) + ' đồng';
+}
+
+function convertPartToWords(part) {
+    const units = ['', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'];
+    const tens = ['', 'mười', 'hai mươi', 'ba mươi', 'bốn mươi', 'năm mươi', 'sáu mươi', 'bảy mươi', 'tám mươi', 'chín mươi'];
+
+    let result = '';
+
+    const hundred = Math.floor(part / 100);
+    const ten = Math.floor((part % 100) / 10);
+    const unit = part % 10;
+
+    if (hundred > 0) {
+        result += units[hundred] + ' trăm ';
+    }
+
+    if (ten > 0) {
+        result += tens[ten] + ' ';
+    } else if (hundred > 0 && unit > 0) {
+        result += 'lẻ ';
+    }
+
+    if (unit > 0) {
+        if (ten > 1 && unit === 1) {
+            result += 'mốt';
+        } else if (ten > 0 && unit === 5) {
+            result += 'lăm';
+        } else {
             result += units[unit];
         }
-
-        return result.trim();
     }
+
+    return result.trim();
+}
+
+function capitalizeFirstLetter(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
     // Khi trang được tải, lấy thông tin từ URL và gọi API
     document.addEventListener("DOMContentLoaded", function() {
