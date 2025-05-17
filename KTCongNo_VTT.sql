@@ -29,6 +29,7 @@ CREATE TABLE HoaDonMuaHang (
     TKNoHang TEXT,
     TKNoThue TEXT,
     TKCoThanhToan TEXT,
+    HanTT NUMERIC,
     TienThanhToan NUMERIC,
     TienHang NUMERIC,
     ThueSuat NUMERIC,
@@ -81,7 +82,7 @@ CREATE TABLE GiayBao (
     SoTKNHDen TEXT
 );
 
-CREATE TABLE PhieuTC ( // phiếu thu chi
+CREATE TABLE PhieuTC (
     SoCT TEXT NOT NULL PRIMARY KEY,
     NgayCT TEXT NOT NULL,
     MaKH TEXT NOT NULL,
@@ -90,7 +91,7 @@ CREATE TABLE PhieuTC ( // phiếu thu chi
     MaCT TEXT NOT NULL
 );
 
-CREATE TABLE CTPhieu ( // chi tiết phiếu
+CREATE TABLE CTPhieu ( 
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
     SoCT TEXT NOT NULL,
     TKNo TEXT NOT NULL,
@@ -289,22 +290,22 @@ INSERT INTO CTPhieu (Id, SoCT, TKNo, TKCo, NoiDung, SoTien)
 VALUES (267, 'KT002', '131', '', '', 7000000);
 
 INSERT INTO CTPhieu (Id, SoCT, TKNo, TKCo, NoiDung, SoTien) 
-VALUES (268, 'KT002', '111', '', '', 15000000);
+VALUES (268, 'KT002', '111', '131', '', 15000000);
 
 INSERT INTO CTPhieu (Id, SoCT, TKNo, TKCo, NoiDung, SoTien) 
-VALUES (269, 'KT002', '', '511', '', 22000000);
+VALUES (269, 'KT002', '111', '511', '', 22000000);
 
 INSERT INTO CTPhieu (Id, SoCT, TKNo, TKCo, NoiDung, SoTien) 
-VALUES (270, 'KT004', '111', '', '', 5000000);
+VALUES (270, 'KT004', '111', '131', '', 5000000);
 
 INSERT INTO CTPhieu (Id, SoCT, TKNo, TKCo, NoiDung, SoTien) 
 VALUES (271, 'KT004', '', '131', '', 5000000);
 
 INSERT INTO CTPhieu (Id, SoCT, TKNo, TKCo, NoiDung, SoTien) 
-VALUES (272, 'KT003', '532', '', 'Giảm giá hàng bán', 4200000);
+VALUES (272, 'KT003', '532', '131', 'Giảm giá hàng bán', 4200000);
 
 INSERT INTO CTPhieu (Id, SoCT, TKNo, TKCo, NoiDung, SoTien) 
-VALUES (273, 'KT003', '', '131', '', 4200000);
+VALUES (273, 'KT003', '111', '131', 'gcfhgfjgj', 4200000);
 
 INSERT INTO CTPhieu (Id, SoCT, TKNo, TKCo, NoiDung, SoTien) 
 VALUES (276, 'PT002', '112', '131', 'Thanh toán tiền Camera cho công ty ÔNG TY CỔ PHẦN DƯỢC MỸ PHẨM SANCHA', 6000000);
@@ -319,13 +320,13 @@ INSERT INTO CTPhieu (Id, SoCT, TKNo, TKCo, NoiDung, SoTien)
 VALUES (281, 'PT004', '111', '131', 'Thu tiền Token của CÔNG TY TNHH THIẾT BỊ THÔNG MINH SSEHOME', 5000000);
 
 INSERT INTO CTPhieu (Id, SoCT, TKNo, TKCo, NoiDung, SoTien) 
-VALUES (282, 'PC001', '111', '511', 'Chi tiền mua thiết bị văn phòng', 20000000);
+VALUES (282, 'PC001', '331', '112', 'Chi tiền mua thiết bị văn phòng', 20000000);
 
 INSERT INTO CTPhieu (Id, SoCT, TKNo, TKCo, NoiDung, SoTien) 
-VALUES (284, 'PC003', '111', '511', 'Trả tiền thuốc diệt muỗi văn phòng cho CÔNG TY TNHH KỸ NGHỆ PHÚC ANH', 3000000);
+VALUES (284, 'PC003', '331', '112', 'Trả tiền thuốc diệt muỗi văn phòng cho CÔNG TY TNHH KỸ NGHỆ PHÚC ANH', 3000000);
 
 INSERT INTO CTPhieu (Id, SoCT, TKNo, TKCo, NoiDung, SoTien) 
-VALUES (285, 'PC002', '111', '511', 'Trả tiền mua màn hình máy tính cho CÔNG TY CỔ PHẦN THƯƠNG MẠI MÁY TÍNH AN PHÁT', 34000000);
+VALUES (285, 'PC002', '331', '111', 'Trả tiền mua màn hình máy tính cho CÔNG TY CỔ PHẦN THƯƠNG MẠI MÁY TÍNH AN PHÁT', 34000000);
 
 INSERT INTO DMCT (MaCT, TenCT, TblName) VALUES ('BC', 'Giấy báo có', 'GiayBao');
 INSERT INTO DMCT (MaCT, TenCT, TblName) VALUES ('BN', 'Giấy báo nợ', 'GiayBao');
@@ -628,18 +629,18 @@ INSERT INTO GiayBao (SoCT, NgayCT, MaKH, NguoiGD, LyDo, MaCT, SoTKNHDi, SoTKNHDe
 ('BN005',   '2024-01-29', 'NCC002', 'Trần Văn Năm', 'Thanh toán thiết bị văn phòng', 'BN', NULL, NULL);
 
 INSERT INTO HDHH (SoCT, NgayCT, MaKH, TKNoThanhToan, TKCoDoanhThu, TKCoThue, HanTT, TienThanhToan, TienDoanhThu, ThueSuat, TienThue, HTTT, TienCK, TyLeCK, TKChietKhau, DienGiai, MaCT) VALUES
-('HD001',   '2024-02-01 01:32:00', 'KH009', '', '', '', 0, 20000000, 20000000, 0, 0, '', 0, 0, '', 'Khóa đào tạo tập trung AMIS KT cho công ty NGÔI NH', 'HD'),
-('HD002',   '2024-02-05 01:33:26', 'KH004', '', '', '', 0, 9000000, 9000000, 0, 0, '', 0, 0, '', 'Khóa học phần mềm AMIS KT online cho CÔNG TY TRÁCH', 'HD'),
-('HD003',   '2024-03-21 01:44:45', 'KH001', '', '', '', 0, 13690000, 13690000, 0, 0, '', 0, 0, '', 'Máy tính bảng, máy tính tiền CÔNG TY TNHH DỊCH VỤ', 'HD'),
-('HD004',   '2024-03-25 01:42:21', 'KH005', '', '', '', 0, 31300000, 31300000, 0, 0, '', 0, 0, '', 'Khóa đào tạo phần mềm AMIS KT 1-1, máy chấm công c', 'HD'),
-('HD005',   '2024-04-02 01:47:01', 'KH010', '', '', '', 0, 12690000, 12690000, 0, 0, '', 0, 0, '', 'Khóa đào tạo tập trung MISA SME (trên 10 người) ch', 'HD'),
-('HD006',   '2024-04-24 01:26:45', 'KH006', '', '', '', 0, 18300000, 18300000, 8, 0, '', 0, 2, '', 'Máy tính tiền, camera cho CÔNG TY CỔ PHẦN DƯỢC MỸ', 'HD');
+('HD001',   '2024-02-01 01:32:00', 'KH009', '131', '156', '', 30, 20000000, 20000000, 0, 0, '', 0, 0, '', 'Khóa đào tạo tập trung AMIS KT cho công ty NGÔI NH', 'HD'),
+('HD002',   '2024-02-05 01:33:26', 'KH004', '131', '156', '', 60, 9000000, 9000000, 0, 0, '', 0, 0, '', 'Khóa học phần mềm AMIS KT online cho CÔNG TY TRÁCH', 'HD'),
+('HD003',   '2024-03-21 01:44:45', 'KH001', '131', '156', '', 30, 13690000, 13690000, 0, 0, '', 0, 0, '', 'Máy tính bảng, máy tính tiền CÔNG TY TNHH DỊCH VỤ', 'HD'),
+('HD004',   '2024-03-25 01:42:21', 'KH005', '131', '156', '', 90, 31300000, 31300000, 0, 0, '', 0, 0, '', 'Khóa đào tạo phần mềm AMIS KT 1-1, máy chấm công c', 'HD'),
+('HD005',   '2024-04-02 01:47:01', 'KH010', '131', '156', '', 20, 12690000, 12690000, 0, 0, '', 0, 0, '', 'Khóa đào tạo tập trung MISA SME (trên 10 người) ch', 'HD'),
+('HD006',   '2024-04-24 01:26:45', 'KH006', '131', '156', '', 10, 18300000, 18300000, 8, 0, '', 0, 2, '', 'Máy tính tiền, camera cho CÔNG TY CỔ PHẦN DƯỢC MỸ', 'HD');
 
-INSERT INTO HoaDonMuaHang (SoCT, NgayCT, MaKH, TKNoHang, TKNoThue, TKCoThanhToan, TienThanhToan, TienHang, ThueSuat, TienThue, HTTT, TienCK, TyLeCK, TKChietKhau, DienGiai, MaCT) VALUES
-('MH001',   '2024-04-14 00:00:00', 'NCC003', '642', '1331', '1112', 28000000, 28000000, 0, 0, '', 0, 0, '', 'Mua nội thất cho phòng họp số 3', 'MH'),
-('MH002',   '2024-03-02 00:00:00', 'NCC004', '642', '1331', '111', 2300000, 2300000, 0, 0, '', 0, 0, '', 'Dọn vệ sinh định kỳ', 'MH'),
-('MH003',   '2024-04-03 00:00:00', 'NCC005', '642', '1331', '111', 750000, 750000, 0, 0, '', 0, 0, '', 'Mua văn phòng phẩm tháng 4', 'MH'),
-('TL001',   '2024-05-25 00:00:00', 'NCC002', '153', '133', '111', 0, 0, 0, 0, '', 0, 0, '', '', 'TL');
+INSERT INTO HoaDonMuaHang (SoCT, NgayCT, MaKH, TKNoHang, TKNoThue, TKCoThanhToan, HanTT, TienThanhToan, TienHang, ThueSuat, TienThue, HTTT, TienCK, TyLeCK, TKChietKhau, DienGiai, MaCT) VALUES
+('MH001',   '2024-04-14 00:00:00', 'NCC003', '642', '1331', '331', 28000000, 10 , 28000000, 0, 0, '', 0, 0, '', 'Mua nội thất cho phòng họp số 3', 'MH'),
+('MH002',   '2024-03-02 00:00:00', 'NCC004', '642', '1331', '331', 2300000, 30 , 2300000, 0, 0, '', 0, 0, '', 'Dọn vệ sinh định kỳ', 'MH'),
+('MH003',   '2024-04-03 00:00:00', 'NCC005', '642', '1331', '331', 750000, 20 , 750000, 0, 0, '', 0, 0, '', 'Mua văn phòng phẩm tháng 4', 'MH'),
+('TL001',   '2024-05-25 00:00:00', 'NCC002', '153', '133', '111', 0, 0 , 0, 0, 0, '', 0, 0, '', '', 'TL');
 INSERT INTO NganHang (MaNH, TenNH) VALUES
 ('AGB', 'Ngân hàng Nông nghiệp và Phát triển Nông thôn Việt Nam'),
 ('BIDV', 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam'),

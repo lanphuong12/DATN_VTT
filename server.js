@@ -2,6 +2,7 @@ const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
 const path = require('path');
+const { promisify } = require('util');    // ← Import promisify ở đây
 
 const app = express();
 const db = new sqlite3.Database('./kt.db');
@@ -882,6 +883,322 @@ app.get('/api/pct/:soctpct', (req, res) => {
       });
     });
   });
+
+  // API: Báo cáo công nợ
+/**
+ * GET /api/summary
+ * Query params:
+ *   start – YYYY-MM-DD
+ *   end   – YYYY-MM-DD
+ *   matk  – tài khoản (string)
+ *
+ * Response: {
+ *   rows: [ { MaKH, TenKH, MaSoThue, NoDauKy, CoDauKy, PhatSinhNo, PhatSinhCo, NoCuoiKy, CoCuoiKy }, … ],
+ *   totals: { NoDauKy, CoDauKy, PhatSinhNo, PhatSinhCo, NoCuoiKy, CoCuoiKy }
+ * }
+ */
+
+// promisify để dùng async/await
+const dbAll = promisify(db.all.bind(db));
+const dbGet = promisify(db.get.bind(db));
+
+app.get('/api/tonghopcongnnophaithu', async (req, res) => {
+  try {
+    const { start, end, matk } = req.query;
+    if (!start || !end || !matk) {
+      return res.status(400).json({ error: 'Thiếu tham số start/end/matk' });
+    }
+
+    // 1) Lấy danh sách MaKH
+    const custs = await dbAll(
+      `SELECT DISTINCT MaKH
+       FROM HDHH
+       WHERE date(NgayCT) BETWEEN date(?) AND date(?)`,
+      [start, end]
+    );
+
+    const rows = [];
+    for (const { MaKH: makh } of custs) {
+      // 2) Thông tin khách
+      const khRow = await dbGet(
+        `SELECT TenKH, MaSoThue
+         FROM DMKH
+         WHERE MaKH = ?`,
+        [makh]
+      );
+      const TenKH    = khRow?.TenKH    || '';
+      const MaSoThue = khRow?.MaSoThue || '';
+
+      // 3) Nợ/Có đầu kỳ
+      const ndkRow = await dbGet(
+        `SELECT IFNULL(DuNo,0) AS DuNo, IFNULL(DuCo,0) AS DuCo
+         FROM NoDauKy
+         WHERE MaKH = ? AND MaTK = ?`,
+        [makh, matk]
+      );
+      const DuNo = ndkRow?.DuNo || 0;
+      const DuCo = ndkRow?.DuCo || 0;
+
+      // 4) Phát sinh Nợ
+      const pnoRow = await dbGet(
+        `SELECT IFNULL(SUM(TienThanhToan),0) AS sumNo
+         FROM HDHH
+         WHERE MaKH = ?
+           AND TKNoThanhToan = ?
+           AND date(NgayCT) BETWEEN date(?) AND date(?)`,
+        [makh, matk, start, end]
+      );
+      const PhatSinhNo = pnoRow?.sumNo || 0;
+
+      // 5) Phát sinh Có
+      const pcoRow = await dbGet(
+        `SELECT IFNULL(SUM(ct.SoTien),0) AS sumCo
+         FROM PhieuTC p
+         JOIN HDHH hd
+           ON p.MaKH = hd.MaKH
+          AND date(p.NgayCT) > date(hd.NgayCT)
+         JOIN CTPhieu ct
+           ON ct.SoCT = p.SoCT
+         WHERE p.MaKH = ?`,
+        [makh]
+      );
+      const PhatSinhCo = pcoRow?.sumCo || 0;
+
+      // 6) Nợ/Có cuối kỳ
+      const NoCuoiKy = DuNo + PhatSinhNo;
+      const CoCuoiKy = DuCo + PhatSinhCo;
+
+      // —— SỬA Ở ĐÂY: dùng makh (không phải MaKH) cho key MaKH
+      rows.push({
+        MaKH:        makh,
+        TenKH,
+        MaSoThue,
+        NoDauKy:     DuNo,
+        CoDauKy:     DuCo,
+        PhatSinhNo,
+        PhatSinhCo,
+        NoCuoiKy,
+        CoCuoiKy
+      });
+    }
+
+    // 7) Tính tổng
+    const totals = rows.reduce((t, r) => {
+      t.NoDauKy    += r.NoDauKy;
+      t.CoDauKy    += r.CoDauKy;
+      t.PhatSinhNo += r.PhatSinhNo;
+      t.PhatSinhCo += r.PhatSinhCo;
+      t.NoCuoiKy   += r.NoCuoiKy;
+      t.CoCuoiKy   += r.CoCuoiKy;
+      return t;
+    }, {
+      NoDauKy:0, CoDauKy:0,
+      PhatSinhNo:0, PhatSinhCo:0,
+      NoCuoiKy:0, CoCuoiKy:0
+    });
+
+    res.json({ rows, totals });
+
+  } catch (err) {
+    console.error('❌ LỖI /api/summary:', err.stack);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/tonghopcongnnophaitra', async (req, res) => {
+  try {
+    const { start, end, matk } = req.query;
+    if (!start || !end || !matk) {
+      return res.status(400).json({ error: 'Thiếu tham số start/end/matk' });
+    }
+
+    // 1) Danh sách NCC (MaKH) có Hóa đơn mua hàng trong khoảng
+    const suppliers = await dbAll(
+      `SELECT DISTINCT MaKH
+       FROM HoaDonMuaHang
+       WHERE date(NgayCT) BETWEEN date(?) AND date(?)`,
+      [start, end]
+    );
+
+    const rows = [];
+    for (const { MaKH: makh } of suppliers) {
+      // 2) Thông tin NCC
+      const sup = await dbGet(
+        `SELECT TenKH, MaSoThue FROM DMKH WHERE MaKH = ?`,
+        [makh]
+      ) || { TenKH:'', MaSoThue:'' };
+
+      // 3) Nợ đầu kỳ / Có đầu kỳ
+      const ndk = await dbGet(
+        `SELECT IFNULL(DuNo,0) AS DuNo, IFNULL(DuCo,0) AS DuCo
+         FROM NoDauKy
+         WHERE MaKH = ? AND MaTK = ?`,
+        [makh, matk]
+      ) || { DuNo:0, DuCo:0 };
+
+      // 4) Phát sinh Có = SUM(TienThanhToan) khi TKCoThanhToan = matk
+      const pcoRow = await dbGet(
+        `SELECT IFNULL(SUM(TienThanhToan),0) AS sumCo
+         FROM HoaDonMuaHang
+         WHERE MaKH = ?
+           AND TKCoThanhToan = ?
+           AND date(NgayCT) BETWEEN date(?) AND date(?)`,
+        [makh, matk, start, end]
+      );
+      const PhatSinhCo = pcoRow?.sumCo || 0;
+
+      // 5) Phát sinh Nợ = từ PhieuTC sau hạn, sum CTPhieu.SoTien
+      //    hạn = NgayCT + HanTT ngày (lưu ở HDMH.HanTT)
+      //    nếu sum = 0 => PhatSinhNo = 0 else PhatSinhNo = sum
+      const pnoRow = await dbGet(
+        `SELECT IFNULL(SUM(ct.SoTien),0) AS sumNo
+         FROM PhieuTC p
+         JOIN HoaDonMuaHang hd
+           ON p.MaKH = hd.MaKH
+          AND date(p.NgayCT) > date(hd.NgayCT)
+         JOIN CTPhieu ct
+           ON ct.SoCT = p.SoCT
+         WHERE p.MaKH = ?`,
+        [makh]
+      );
+      const PhatSinhNo = pnoRow?.sumNo || 0;
+
+      // 6) Nợ/Có cuối kỳ
+      const NoCuoiKy = ndk.DuNo + PhatSinhNo;
+      const CoCuoiKy = ndk.DuCo + PhatSinhCo;
+
+      rows.push({
+        MaKH:        makh,
+        TenKH:       sup.TenKH,
+        MaSoThue:    sup.MaSoThue,
+        NoDauKy:     ndk.DuNo,
+        CoDauKy:     ndk.DuCo,
+        PhatSinhNo,
+        PhatSinhCo,
+        NoCuoiKy,
+        CoCuoiKy
+      });
+    }
+
+    // 7) Tính tổng
+    const totals = rows.reduce((t,r) => {
+      t.NoDauKy    += r.NoDauKy;
+      t.CoDauKy    += r.CoDauKy;
+      t.PhatSinhNo += r.PhatSinhNo;
+      t.PhatSinhCo += r.PhatSinhCo;
+      t.NoCuoiKy   += r.NoCuoiKy;
+      t.CoCuoiKy   += r.CoCuoiKy;
+      return t;
+    }, {
+      NoDauKy:0, CoDauKy:0,
+      PhatSinhNo:0, PhatSinhCo:0,
+      NoCuoiKy:0, CoCuoiKy:0
+    });
+
+    res.json({ rows, totals });
+  } catch (err) {
+    console.error('❌ LỖI /api/payable:', err.stack);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/details', async (req, res) => {
+  try {
+    const { date: cutoff, matk } = req.query;
+    if (!cutoff || !matk) {
+      return res.status(400).json({ error: 'Thiếu tham số date/matk' });
+    }
+
+    // dùng trường TKCoDoanhThu cho payables (đổi thành TKNoThanhToan nếu cần)
+    const acctField = 'TKCoDoanhThu';
+
+    // 1) Danh sách MaKH có HDHH phù hợp
+    const custs = await dbAll(
+      `SELECT DISTINCT MaKH
+       FROM HDHH
+       WHERE ${acctField} = ?
+         AND date(NgayCT) < date(?)`,
+      [matk, cutoff]
+    );
+
+    const rows = [];
+    for (const { MaKH: makh } of custs) {
+      // 2) Thông tin KH
+      const kh = await dbGet(
+        `SELECT TenKH, MaSoThue FROM DMKH WHERE MaKH = ?`,
+        [makh]
+      ) || { TenKH: '', MaSoThue: '' };
+
+      // 3) Nợ đầu kỳ / Có đầu kỳ
+      const ndk = await dbGet(
+        `SELECT IFNULL(DuNo,0) AS DuNo, IFNULL(DuCo,0) AS DuCo
+         FROM NoDauKy
+         WHERE MaKH = ? AND MaTK = ?`,
+        [makh, matk]
+      ) || { DuNo: 0, DuCo: 0 };
+
+      // 4) Phát sinh nợ = tổng TienThanhToan của HDHH
+      const pno = await dbGet(
+        `SELECT IFNULL(SUM(TienThanhToan),0) AS sumNo
+         FROM HDHH
+         WHERE MaKH = ?
+           AND ${acctField} = ?
+           AND date(NgayCT) < date(?)`,
+        [makh, matk, cutoff]
+      );
+      const phatSinhNo = pno.sumNo;
+
+      // 5) Phát sinh có = tổng SoTien từ CTPhieu cho PhieuTC sau cutoff
+      const pco = await dbGet(
+        `SELECT IFNULL(SUM(ct.SoTien),0) AS sumCo
+         FROM PhieuTC p
+         JOIN CTPhieu ct ON ct.SoCT = p.SoCT
+         WHERE p.MaKH = ?
+           AND date(p.NgayCT) > date(?)`,
+        [makh, cutoff]
+      );
+      const phatSinhCo = pco.sumCo;
+
+      // 6) Nợ/Có cuối kỳ
+      const noCuoiKy = ndk.DuNo + phatSinhNo;
+      const coCuoiKy = ndk.DuCo + phatSinhCo;
+
+      // 7) Nợ quá hạn = tổng TienThanhToan của HDHH quá hạn − phatSinhCo (>=0)
+      const over = await dbGet(
+        `SELECT IFNULL(SUM(TienThanhToan),0) AS sumOver
+         FROM HDHH
+         WHERE MaKH = ?
+           AND ${acctField} = ?
+           AND date(NgayCT, '+'||HanTT||' days') < date(?)`,
+        [makh, matk, cutoff]
+      );
+      const noQuaHan = Math.max(0, over.sumOver - phatSinhCo);
+
+      rows.push({
+        MaKH:      makh,
+        TenKH:     kh.TenKH,
+        MaSoThue:  kh.MaSoThue,
+        NoCuoiKy:  noCuoiKy,
+        CoCuoiKy:  coCuoiKy,
+        NoQuaHan:  noQuaHan
+      });
+    }
+
+    // 8) Tính tổng các cột
+    const totals = rows.reduce((t, r) => {
+      t.NoCuoiKy += r.NoCuoiKy;
+      t.CoCuoiKy += r.CoCuoiKy;
+      t.NoQuaHan += r.NoQuaHan;
+      return t;
+    }, { NoCuoiKy: 0, CoCuoiKy: 0, NoQuaHan: 0 });
+
+    res.json({ rows, totals });
+  } catch (err) {
+    console.error('❌ LỖI /api/details:', err.stack);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Khởi động server
 app.listen(3000, () => {
     console.log('Server chạy tại http://localhost:3000');

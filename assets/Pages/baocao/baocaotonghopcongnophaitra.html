@@ -98,78 +98,40 @@
   <h2>BÁO CÁO TỔNG HỢP CÔNG NỢ</h2>
   <div class="subtitle">
 
-    Từ ngày <strong>01/01/2025</strong> đến ngày <strong>31/01/2025</strong><br />
+    Từ ngày <strong><span id="ngaybatdau"></span></strong> đến ngày <strong><span id="ngayketthuc"></span></strong><br />
     Tài khoản: <strong>331 - Phải trả cho người bán</strong>
     
 
   </div>
   <table>
-    <tr>
-      <th>Mã KH/NCC</th>
-      <th>Tên KH/NCC</th>
-      <th>Mã số thuế</th>
-      <th>Nợ đầu kỳ</th>
-      <th>Có đầu kỳ</th>
-      <th>Phát sinh nợ</th>
-      <th>Phát sinh có</th>
-      <th>Nợ cuối kỳ</th>
-      <th>Có cuối kỳ</th>
-    </tr>
-    <tr>
-      <td>NCC001</td>
-      <td>CÔNG TY CỔ PHẦN THƯƠNG MẠI MÁY TÍNH AN PHÁT</td>
-      <td>0108940873</td>
-      <td>4,10,00,000</td>
-      <td>1,20,00,000</td>
-      <td>0</td>
-      <td>0</td>
-      <td>2,90,00,000</td>
-      <td>0</td>
-    </tr>
-    <tr>
-        <td>NCC002</td>
-        <td>CÔNG TY TNHH HÀ NỘI COMPUTER</td>
-        <td>0110473961</td>
-        <td>1,50,00,000</td>
-        <td>1,0,00,000</td>
-        <td>0</td>
-        <td>0</td>
-        <td>50,00,000</td>
-        <td>0</td>
-      </tr>
+    <thead>
       <tr>
-        <td>NCC003</td>
-        <td>CÔNG TY CỔ PHẦN THƯƠNG MẠI MÁY TÍNH AN PHÁT</td>
-        <td>0108940873</td>
-        <td>1,20,00,000</td>
-        <td>1,50,00,000</td>
-        <td>0</td>
-        <td>0</td>
-        <td>0</td>
-        <td>3,00,00,000</td>
+        <th>Mã KH/NCC</th>
+        <th>Tên KH/NCC</th>
+        <th>Mã số thuế</th>
+        <th>Nợ đầu kỳ</th>
+        <th>Có đầu kỳ</th>
+        <th>Phát sinh nợ</th>
+        <th>Phát sinh có</th>
+        <th>Nợ cuối kỳ</th>
+        <th>Có cuối kỳ</th>
       </tr>
-      <tr>
-        <td>NCC004</td>
-        <td>CÔNG TY TNHH KỸ NGHỆ PHÚC ANH</td>
-        <td>0105767941</td>
-        <td>1,50,00,000</td>
-        <td>2,30,00,000</td>
-        <td>0</td>
-        <td>0</td>
-        <td>0</td>
-        <td>3,50,00,000</td>
-      </tr>
+    </thead>
+    <tbody id="body"></tbody>
+    <tfoot>
       <tr>
         <td></td>
         <td>TỔNG CỘNG</td>
         <td></td>
-        <td>8,30,00,000</td>
-        <td>6,00,00,000</td>
-        <td>0</td>
-        <td>0</td>
-        <td>3,40,00,000</td>
-        <td>1,10,00,000</td>
+        <td id="tongnodauky"></td>
+        <td id="tongcodauky"></td>
+        <td id="tongphatsinhno"></td>
+        <td id="tongphatsinhco"></td>
+        <td id="tongnocuoiky"></td>
+        <td id="tongcocuoiky"></td>
       </tr>
+    </tfoot>
+      
     <!-- Bạn có thể thêm dòng ở đây nếu cần -->
   </table>
 
@@ -189,6 +151,53 @@
       <div class="name">Vũ Xuân Quân</div>
     </div>
   </div>
+
+  <script>
+    (async ()=>{
+      const p = new URLSearchParams(location.search);
+      const start = p.get('start'), end = p.get('end'), matk = p.get('matk');
+      if(!start||!end||!matk){
+        return document.getElementById('body').innerHTML=
+          '<tr><td colspan="9">Thiếu tham số</td></tr>';
+      }
+      const res = await fetch(`/api/tonghopcongnnophaitra?start=${start}&end=${end}&matk=${matk}`);
+      if(!res.ok){
+        document.getElementById('body').innerHTML=
+          `<tr><td colspan="9">Lỗi: ${res.status}</td></tr>`;
+        return;
+      }
+
+      document.getElementById('ngaybatdau').textContent = start;
+      document.getElementById('ngayketthuc').textContent = end;
+      
+      const {rows,totals} = await res.json();
+
+      const tb= document.getElementById('body');
+      rows.forEach(r=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML=`
+          <td>${r.MaKH}</td>
+          <td>${r.TenKH}</td>
+          <td>${r.MaSoThue}</td>
+          <td>${r.NoDauKy.toLocaleString()}</td>
+          <td>${r.CoDauKy.toLocaleString()}</td>
+          <td>${r.PhatSinhNo.toLocaleString()}</td>
+          <td>${r.PhatSinhCo.toLocaleString()}</td>
+          <td>${r.NoCuoiKy.toLocaleString()}</td>
+          <td>${r.CoCuoiKy.toLocaleString()}</td>
+        `;
+        tb.appendChild(tr);
+      });
+
+      document.getElementById('tongnodauky').textContent = totals.NoDauKy.toLocaleString();
+      document.getElementById('tongcodauky').textContent = totals.CoDauKy.toLocaleString(); 
+      document.getElementById('tongphatsinhno').textContent = totals.PhatSinhNo.toLocaleString();
+      document.getElementById('tongphatsinhco').textContent = totals.PhatSinhCo.toLocaleString();
+      document.getElementById('tongnocuoiky').textContent = totals.NoCuoiKy.toLocaleString();
+      document.getElementById('tongcocuoiky').textContent = totals.CoCuoiKy.toLocaleString();
+
+    })();
+  </script>
 
 </body>
 </html>

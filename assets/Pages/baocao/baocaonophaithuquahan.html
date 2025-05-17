@@ -98,91 +98,34 @@
   <h2>BÁO CÁO NỢ QUÁ HẠN</h2>
   <div class="subtitle">
 
-   Ngày <strong>31/01/2025</strong><br />
+   Ngày <strong><span id="ngaybatdau"></span></strong><br />
     Tài khoản: <strong>131 - Phải thu của khách hàng</strong><br /> 
 
   </div>
   <table>
-    <tr>
-      <th>Mã KH/NCC</th>
-      <th>Tên KH/NCC</th>
-      <th>Mã số thuế</th>
-      <th>Nợ cuối kỳ</th>
-      <th>Có cuối kỳ</th>
-      <th>Nợ quá hạn</th>
-    </tr>
-    <tr>
-      <td>KH002</td>
-      <td>CÔNG TY TNHH THIẾT BỊ THÔNG MINH SSEHOME</td>
-      <td>0106718312</td>
-      <td>1,50,00,000</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-        <td>KH004</td>
-        <td>CÔNG TY TRÁCH NHIỆM HỮU HẠN MỘT THÀNH VIÊN HƯNG TECH</td>
-        <td>2400557889</td>
-        <td>1,25,00,000</td>
-        <td>0</td>
-        <td>1,25,00,000</td>
-      </tr>
+    <thead>
       <tr>
-        <td>KH005</td>
-        <td>CÔNG TY CỔ PHẦN SẢN XUẤT THƯƠNG MẠI VÀ DỊCH VỤ BẢO MINH</td>
-        <td>0102347850</td>
-        <td>0</td>
-        <td>75,00,000</td>
-        <td>75,00,000</td>
+        <th>Mã KH/NCC</th>
+        <th>Tên KH/NCC</th>
+        <th>Mã số thuế</th>
+        <th>Nợ cuối kỳ</th>
+        <th>Có cuối kỳ</th>
+        <th>Nợ quá hạn</th>
       </tr>
-      <tr>
-        <td>KH006</td>
-        <td>CÔNG TY CỔ PHẦN DƯỢC MỸ PHẨM SANGCHA VIỆT NAM - THÀNH SƠN</td>
-        <td>5100497514</td>
-        <td>0</td>
-        <td>1,70,00,000</td>
-        <td>1,70,00,000</td>
-      </tr>
-      <tr>
-        <td>KH007</td>
-        <td>CÔNG TY CỔ PHẦN TRÀNG TIỀN</td>
-        <td>0100107148</td>
-        <td>95,50,000</td>
-        <td>0</td>
-        <td>95,50,000</td>
-      </tr>
-      <tr>
-        <td>KH008</td>
-        <td>CÔNG TY CỔ PHẦN DAYO VIỆT NAM</td>
-        <td>0106684335</td>
-        <td>21,00,000</td>
-        <td>0</td>
-        <td>21,00,000</td>
-      </tr>
-      <tr>
-        <td>KH009</td>
-        <td>CÔNG TY CỔ PHẦN SẢN XUẤT THƯƠNG MẠI VÀ PHÁT TRIỂN NGÔI NHÀ XANH</td>
-        <td>0108802739</td>
-        <td>0</td>
-        <td>1,40,50,000</td>
-        <td>1,40,50,0000</td>
-      </tr>
-      <tr>
-        <td>KH010</td>
-        <td>CÔNG TY TNHH MỘT THÀNH VIÊN SẢN XUẤT VÀ THƯƠNG MẠI XUÂN TRƯỜNG KM</td>
-        <td>0801225372</td>
-        <td>2,21,50,000</td>
-        <td>0</td>
-        <td>2,21,50,000</td>
-      </tr>
+    </thead>
+
+    <tbody id="body"></tbody>
+    <tfoot>
       <tr>
         <td></td>
         <td>TỔNG CỘNG</td>
         <td></td>
-        <td>16,13,00,000</td>
-        <td>3,85,50,000</td>
-        <td>2,27,50,000</td>
+        <td><span id="NoCuoiKy"></span></td>
+        <td><span id="CoCuoiKy"></span></td>
+        <td><span id="NoQuaHan"></span></td>
       </tr>
+    </tfoot>
+      
     <!-- Bạn có thể thêm dòng ở đây nếu cần -->
   </table>
 
@@ -202,6 +145,50 @@
       <div class="name">Vũ Xuân Quân</div>
     </div>
   </div>
+
+  <script>
+    (async () => {
+      const p = new URLSearchParams(location.search);
+      const cutoff = p.get('date'), matk = p.get('matk');
+      if (!cutoff || !matk) {
+        document.querySelector('#report tbody')
+          .innerHTML = '<tr><td colspan="6">Thiếu tham số</td></tr>';
+        return;
+      }
+      document.getElementById('cutoff').textContent = cutoff;
+      document.getElementById('acct').textContent   = matk;
+  
+      const res = await fetch(`/api/details?date=${cutoff}&matk=${matk}`);
+      if (!res.ok) {
+        document.querySelector('#report tbody')
+          .innerHTML = `<tr><td colspan="6">Lỗi: ${res.status}</td></tr>`;
+        return;
+      }
+
+      document.getElementById('ngay').textContent = cutoff;
+
+      const { rows, totals } = await res.json();
+  
+      const tbody = document.querySelector('#report tbody');
+      rows.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="left">${r.MaKH}</td>
+          <td class="left">${r.TenKH}</td>
+          <td>${r.MaSoThue}</td>
+          <td>${r.NoCuoiKy.toLocaleString()}</td>
+          <td>${r.CoCuoiKy.toLocaleString()}</td>
+          <td>${r.NoQuaHan.toLocaleString()}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+  
+      document.getElementById('NoCuoiKy').textContent = totals.NoDauKy.toLocaleString();
+      document.getElementById('CoCuoiKy').textContent = totals.CoDauKy.toLocaleString(); 
+      document.getElementById('NoQuaHan').textContent = totals.PhatSinhNo.toLocaleString();
+      
+    })();
+    </script>
 
 </body>
 </html>
