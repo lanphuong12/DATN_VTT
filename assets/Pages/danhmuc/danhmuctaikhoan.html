@@ -147,10 +147,10 @@
             <i class="treeview-indicator bx bx-chevron-down"></i>
           </a>
           <ul class="treeview-menu1">
-            <li> <a class="treeview-item" href="../baocao/baocaotonghopcongnophaithu.html" > Báo cáo tổng hợp công nợ phải thu</a > </li>
-            <li> <a class="treeview-item" href="../baocao/baocaotonghopcongnophaichi.html" >Báo cáo tổng hợp công nợ phải chi</a > </li>
-              <li> <a class="treeview-item" href="../baocao/baocaonophaithuquahan.html" >Báo cáo nợ phải thu quá hạn</a > </li>
-                <li> <a class="treeview-item" href="../baocao/baocaonophaitraquahan.html" >Báo cáo nợ phải trả quá hạn</a > </li>
+            <li> <a class="treeview-item" href="#" id="openTongHopNPTHUModal"> Báo cáo tổng hợp công nợ phải thu</a > </li>
+            <li> <a class="treeview-item" href="#" id="openTongHopNPTRAModal">Báo cáo tổng hợp công nợ phải chi</a > </li>
+              <li> <a class="treeview-item" href="#" id="openBCNPTHUModal">Báo cáo nợ phải thu quá hạn</a > </li>
+                <li> <a class="treeview-item" href="#" id="openBCNPTRAModal">Báo cáo nợ phải trả quá hạn</a > </li>
           </ul>
         </li>
       </ul>
@@ -372,6 +372,7 @@ data-keyboard="false">
 </div>
 </div>
 
+  
   <!-- MODAL SỔ CÁI CHI TIẾT TÀI KHOẢN-->
   <div class="modal fade" id="socaiModalSCT" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
   data-keyboard="false">
@@ -416,6 +417,176 @@ data-keyboard="false">
     </div>
   </div>
   </div>
+
+  <!-- MODAL BÁO CÁO TỔNG HỢP CÔNG NỢ PHẢI THU-->
+  <div class="modal fade" id="socaiModalTHNPTHU" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
+  data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+  
+      <div class="modal-body">
+        <div class="row">
+          <div class="form-group  col-md-12">
+            <span class="thong-tin-thanh-toan">
+              <h5>Báo cáo tổng hợp công nợ phải thu</h5>
+            </span>
+          </div>
+        </div>
+        <div class="row" >
+          <div class="form-group col-md-6">
+            <label class="control-label">Từ ngày</label>
+            <input class="form-control" type="date" id="startDateTHNPTHU">
+          </div>
+          <BR>
+          <div class="form-group col-md-6">
+            <label class="control-label">Đến ngày</label>
+            <input class="form-control" type="date" id="endDateTHNPTHU">
+          </div>
+          <BR>
+          <div class="form-group  col-md-6">
+            <label for="exampleSelect1" class="control-label">Mã tài khoản</label>
+            <select class="form-control" id="maTK">
+              <option value="131">131</option>
+              <option value="331">331</option>
+            </select>
+          </div>
+        </div>
+        <BR>
+        <button class="btn btn-save" type="button" id="confirmBtnTHNPTHU">Xác nhận</button>
+        <button class="btn btn-cancel" data-dismiss="modal">Hủy</button>
+        <!-- <a class="btn btn-cancel" data-dismiss="modal" href="#">Hủy bỏ</a> -->
+        <BR>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+  </div>
+
+    <!-- MODAL BÁO CÁO TỔNG HỢP CÔNG NỢ PHẢI TRẢ-->
+    <div class="modal fade" id="socaiModalTHNPTRA" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
+    data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+    
+        <div class="modal-body">
+          <div class="row">
+            <div class="form-group  col-md-12">
+              <span class="thong-tin-thanh-toan">
+                <h5>Báo cáo tổng hợp công nợ phải trả</h5>
+              </span>
+            </div>
+          </div>
+          <div class="row" >
+            <div class="form-group col-md-6">
+              <label class="control-label">Từ ngày</label>
+              <input class="form-control" type="date" id="startDateTHNPTRA">
+            </div>
+            <BR>
+            <div class="form-group col-md-6">
+              <label class="control-label">Đến ngày</label>
+              <input class="form-control" type="date" id="endDateTHNPTRA">
+            </div>
+            <BR>
+            <div class="form-group  col-md-6">
+              <label for="exampleSelect1" class="control-label">Mã tài khoản</label>
+              <select class="form-control" id="maTKTHNPTRA">
+                <option value="131">131</option>
+                <option value="331">331</option>
+              </select>
+            </div>
+          </div>
+          <BR>
+          <button class="btn btn-save" type="button" id="confirmBtnTHNPTRA">Xác nhận</button>
+          <button class="btn btn-cancel" data-dismiss="modal">Hủy</button>
+          <!-- <a class="btn btn-cancel" data-dismiss="modal" href="#">Hủy bỏ</a> -->
+          <BR>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+    </div>
+
+      <!-- MODAL BÁO CÁO NỢ PHẢI THU QUÁ HẠN -->
+  <div class="modal fade" id="socaiModalBCNPTHU" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
+  data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+  
+      <div class="modal-body">
+        <div class="row">
+          <div class="form-group  col-md-12">
+            <span class="thong-tin-thanh-toan">
+              <h5>Báo cáo nợ phải thu quá hạn</h5>
+            </span>
+          </div>
+        </div>
+        <div class="row" >
+          <div class="form-group col-md-6">
+            <label class="control-label">Chọn ngày</label>
+            <input class="form-control" type="date" id="DateBCNPTHU">
+          </div>
+          <BR>
+          <div class="form-group  col-md-6">
+            <label for="exampleSelect1" class="control-label">Mã tài khoản</label>
+            <select class="form-control" id="maTK">
+              <option value="131">131</option>
+              <option value="331">331</option>
+            </select>
+          </div>
+        </div>
+        <BR>
+        <button class="btn btn-save" type="button" id="confirmBtnBCNPTHU">Xác nhận</button>
+        <button class="btn btn-cancel" data-dismiss="modal">Hủy</button>
+        <!-- <a class="btn btn-cancel" data-dismiss="modal" href="#">Hủy bỏ</a> -->
+        <BR>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+  </div>
+
+    <!-- MODAL BÁO CÁO NỢ PHẢI TRẢ QUÁ HẠN-->
+    <div class="modal fade" id="socaiModalBCNPTRA" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static"
+    data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+    
+        <div class="modal-body">
+          <div class="row">
+            <div class="form-group  col-md-12">
+              <span class="thong-tin-thanh-toan">
+                <h5>Báo cáo nợ phải trả quá hạn</h5>
+              </span>
+            </div>
+          </div>
+          <div class="row" >
+            <div class="form-group col-md-6">
+              <label class="control-label">Chọn ngày</label>
+              <input class="form-control" type="date" id="DateBCNPTRA">
+            </div>
+            <BR>
+            <div class="form-group  col-md-6">
+              <label for="exampleSelect1" class="control-label">Mã tài khoản</label>
+              <select class="form-control" id="maTKBCNPTRA">
+                <option value="131">131</option>
+                <option value="331">331</option>
+              </select>
+            </div>
+          </div>
+          <BR>
+          <button class="btn btn-save" type="button" id="confirmBtnBCNPTRA">Xác nhận</button>
+          <button class="btn btn-cancel" data-dismiss="modal">Hủy</button>
+          <!-- <a class="btn btn-cancel" data-dismiss="modal" href="#">Hủy bỏ</a> -->
+          <BR>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+    </div>
 
   <script src="../../js/jquery-3.2.1.min.js"></script>
     <!--===============================================================================================-->

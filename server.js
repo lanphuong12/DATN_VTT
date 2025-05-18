@@ -416,8 +416,6 @@ app.post('/api/dmkh', (req, res) => {
     });
 });
 
-
-
 // API sửa dữ liệu danh muc khách hàng
 app.put('/api/dmkh/:makh', (req, res) => {
     const { TenKH, DiaChi, Email, DienThoai, MaSoThue} = req.body; // Khớp tên với các tham số trong frontend
@@ -436,6 +434,132 @@ app.put('/api/dmkh/:makh', (req, res) => {
 // API xóa thông tin dmkh
 app.delete('/api/dmkh/:makh', (req, res) => {
     db.run("DELETE FROM DMKH WHERE MaKH = ?", [req.params.makh], err => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true });
+    });
+});
+
+
+// BẢNG NỢ ĐẦU KỲ - NoDauKy
+// API: Lấy danh sách dữ liệu bảng NoDauKy
+app.get('/api/nodauky', (req, res) => {
+    db.all("SELECT * FROM NoDauKy", [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+// API: Lấy 1 dòng theo id
+app.get('/api/nodauky/:id', (req, res) => {
+    db.get("SELECT * FROM NoDauKy WHERE ID = ?", [req.params.id], (err, row) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!row) return res.status(404).json({ error: "Không tìm thấy nợ đầu kỳ." });
+        res.json(row);
+    });
+});
+
+// API: Thêm mới dữ liệu bảng danh muc khách hàng
+app.post('/api/nodauky', (req, res) => {
+    // Kiểm tra dữ liệu gửi lên
+    console.log(req.body); // Kiểm tra dữ liệu gửi từ client
+
+    const { ID, MaTK, MaKH, DuNo, DuCo} = req.body;
+
+    if (!ID || !MaTK || !MaKH  === undefined) {
+        return res.status(400).send('Thiếu dữ liệu');
+    }
+
+    const sql = `INSERT INTO NoDauKy (ID, MaTK, MaKH, DuNo, DuCo ) VALUES (?, ?, ?, ?, ?)`;
+    db.run(sql, [ID, MaTK,  MaKH, DuNo, DuCo], function (err) {
+        if (err) {
+            console.error("Lỗi thêm mới:", err.message);
+            return res.status(500).send(err.message);
+        }
+        res.json({ success: true, id: this.lastID });
+    });
+});
+
+// API sửa dữ liệu danh muc khách hàng
+app.put('/api/nodauky/:id', (req, res) => {
+    const { MaTK,  MaKH, DuNo, DuCo} = req.body; // Khớp tên với các tham số trong frontend
+    const id = req.params.id;
+
+    // Cập nhật thông tin trong cơ sở dữ liệu
+    db.run("UPDATE NoDauKy SET MaTK = ?, MaKH = ?, DuNo = ?, DuCo = ? WHERE ID = ?",
+        [MaTK, MaKH, DuNo, DuCo, id], err => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            res.json({ success: true });
+        });
+});
+
+// API xóa thông tin dmkh
+app.delete('/api/nodauky/:id', (req, res) => {
+    db.run("DELETE FROM NoDauKy WHERE ID = ?", [req.params.id], err => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true });
+    });
+});
+
+
+// BẢNG SỐ DƯ ĐẦU KỲ - SoDuDauKy
+// API: Lấy danh sách dữ liệu bảng SoDuDauKy
+app.get('/api/dudauky', (req, res) => {
+    db.all("SELECT * FROM SoDuDauKy", [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+// API: Lấy 1 dòng theo matk
+app.get('/api/dudauky/:matk', (req, res) => {
+    db.get("SELECT * FROM SoDuDauKy WHERE MaTK = ?", [req.params.matk], (err, row) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (!row) return res.status(404).json({ error: "Không tìm thấy số dư đầu kỳ." });
+        res.json(row);
+    });
+});
+
+// API: Thêm mới dữ liệu 
+app.post('/api/dudauky', (req, res) => {
+    // Kiểm tra dữ liệu gửi lên
+    console.log(req.body); // Kiểm tra dữ liệu gửi từ client
+
+    const { MaTK, DuNo, DuCo} = req.body;
+
+    if (!MaTK === undefined) {
+        return res.status(400).send('Thiếu dữ liệu');
+    }
+
+    const sql = `INSERT INTO SoDuDauKy (MaTK, DuNo, DuCo ) VALUES (?, ?, ?)`;
+    db.run(sql, [MaTK, DuNo,  DuCo], function (err) {
+        if (err) {
+            console.error("Lỗi thêm mới:", err.message);
+            return res.status(500).send(err.message);
+        }
+        res.json({ success: true, id: this.lastID });
+    });
+});
+
+// API sửa dữ liệu số dư đầu kỳ
+app.put('/api/dudauky/:matk', (req, res) => {
+    const {DuNo, DuCo} = req.body; // Khớp tên với các tham số trong frontend
+    const matk = req.params.matk;
+
+    // Cập nhật thông tin trong cơ sở dữ liệu
+    db.run("UPDATE SoDuDauKy SET DuNo = ?, DuCo = ? WHERE MaTK = ?",
+        [DuNo, DuCo, matk], err => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            res.json({ success: true });
+        });
+});
+
+// API xóa thông tin dudauky
+app.delete('/api/dudauky/:matk', (req, res) => {
+    db.run("DELETE FROM SoDuDauKy WHERE MaTK = ?", [req.params.matk], err => {
         if (err) return res.status(500).json({ error: err.message });
         res.json({ success: true });
     });
@@ -1276,16 +1400,12 @@ app.get('/api/noquahanphaithu', async (req, res) => {
       return res.status(400).json({ error: 'Thiếu tham số date/matk' });
     }
 
-    // dùng trường TKCoDoanhThu cho noquahanphaithu (đổi thành TKNoThanhToan nếu cần)
-    const acctField = 'TKCoDoanhThu';
-
     // 1) Danh sách MaKH có HDHH phù hợp
     const custs = await dbAll(
       `SELECT DISTINCT MaKH
        FROM HDHH
-       WHERE ${acctField} = ?
-         AND date(NgayCT) < date(?)`,
-      [matk, cutoff]
+       WHERE date(NgayCT, '+'||HanTT||' days') < date(?)`,
+      [ cutoff]
     );
 
     const rows = [];
@@ -1294,7 +1414,9 @@ app.get('/api/noquahanphaithu', async (req, res) => {
       const kh = await dbGet(
         `SELECT TenKH, MaSoThue FROM DMKH WHERE MaKH = ?`,
         [makh]
-      ) || { TenKH: '', MaSoThue: '' };
+      );
+      const TenKH    = kh?.TenKH    || '';
+      const MaSoThue = kh?.MaSoThue || '';
 
       // 3) Nợ đầu kỳ / Có đầu kỳ
       const ndk = await dbGet(
@@ -1302,51 +1424,55 @@ app.get('/api/noquahanphaithu', async (req, res) => {
          FROM NoDauKy
          WHERE MaKH = ? AND MaTK = ?`,
         [makh, matk]
-      ) || { DuNo: 0, DuCo: 0 };
+      );
+      const DuNo = ndk?.DuNo || 0;
+      const DuCo = ndk?.DuCo || 0;
 
       // 4) Phát sinh nợ = tổng TienThanhToan của HDHH
-      const pno = await dbGet(
+      const pnoRow = await dbGet(
         `SELECT IFNULL(SUM(TienThanhToan),0) AS sumNo
          FROM HDHH
          WHERE MaKH = ?
-           AND ${acctField} = ?
+           AND TKNoThanhToan = ?
            AND date(NgayCT) < date(?)`,
         [makh, matk, cutoff]
       );
-      const phatSinhNo = pno.sumNo;
+      const PhatSinhNo = pnoRow?.sumNo || 0;
 
       // 5) Phát sinh có = tổng SoTien từ CTPhieu cho PhieuTC sau cutoff
-      const pco = await dbGet(
+      const pcoRow = await dbGet(
         `SELECT IFNULL(SUM(ct.SoTien),0) AS sumCo
          FROM PhieuTC p
-         JOIN CTPhieu ct ON ct.SoCT = p.SoCT
-         WHERE p.MaKH = ?
-           AND date(p.NgayCT) > date(?)`,
-        [makh, cutoff]
+         JOIN HDHH hd
+           ON p.MaKH = hd.MaKH
+          AND date(p.NgayCT) > date(hd.NgayCT)
+         JOIN CTPhieu ct
+           ON ct.SoCT = p.SoCT
+         WHERE p.MaKH = ?`,
+        [makh]
       );
-      const phatSinhCo = pco.sumCo;
+      const PhatSinhCo = pcoRow?.sumCo || 0;
 
       // 6) Nợ/Có cuối kỳ
-      const noCuoiKy = ndk.DuNo + phatSinhNo;
-      const coCuoiKy = ndk.DuCo + phatSinhCo;
+      const NoCuoiKy = DuNo + PhatSinhNo;
+      const CoCuoiKy = DuCo + PhatSinhCo;
 
-      // 7) Nợ quá hạn = tổng TienThanhToan của HDHH quá hạn − phatSinhCo (>=0)
+      // 7) Nợ quá hạn = tổng TienThanhToan của HDHH quá hạn − PhatSinhCo (>=0)
       const over = await dbGet(
         `SELECT IFNULL(SUM(TienThanhToan),0) AS sumOver
          FROM HDHH
          WHERE MaKH = ?
-           AND ${acctField} = ?
            AND date(NgayCT, '+'||HanTT||' days') < date(?)`,
-        [makh, matk, cutoff]
+        [makh, cutoff]
       );
-      const noQuaHan = Math.max(0, over.sumOver - phatSinhCo);
+      const noQuaHan = Math.max(0, over.sumOver - PhatSinhCo);
 
       rows.push({
         MaKH:      makh,
         TenKH:     kh.TenKH,
         MaSoThue:  kh.MaSoThue,
-        NoCuoiKy:  noCuoiKy,
-        CoCuoiKy:  coCuoiKy,
+        NoCuoiKy:  NoCuoiKy,
+        CoCuoiKy:  CoCuoiKy,
         NoQuaHan:  noQuaHan
       });
     }
@@ -1424,15 +1550,15 @@ app.get('/api/noquahanphaitra', async (req, res) => {
       const CoCuoiKy = ndk.DuCo + PhatSinhCo;
 
       // 7) Nợ quá hạn
-      const overdueRow = await dbGet(
-        `SELECT IFNULL(SUM(TienThanhToan),0) AS sumOver
-         FROM HoaDonMuaHang
-         WHERE MaKH = ? AND TKCoThanhToan = ?
-           AND date(NgayCT, '+'||HanTT||' days') < date(?)`,
-        [makh, matk, cutoff]
-      );
-      const rawOver = overdueRow.sumOver;
-      const NoQuaHan = Math.max(0, rawOver - PhatSinhCo);
+      // const overdueRow = await dbGet(
+      //   `SELECT IFNULL(SUM(TienThanhToan),0) AS sumOver
+      //    FROM HoaDonMuaHang
+      //    WHERE MaKH = ?
+      //      AND date(NgayCT, '+'||HanTT||' days') < date(?)`,
+      //   [makh, cutoff]
+      // );
+      // const rawOver = overdueRow.sumOver;
+      const NoQuaHan = Math.max(0, CoCuoiKy - PhatSinhNo);
 
       // —— SỬA ĐÚNG Ở ĐÂY: MaKH: makh
       rows.push({
