@@ -324,6 +324,127 @@ data-keyboard="false">
   </div>
   </div>
 
+<!-- Modal Sửa HoaDonMuaHang và CTHoaDonMuaHang -->
+<div class="modal fade" id="editHDMHModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Sửa hóa đơn mua hàng</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Form header -->
+        <form id="editHDMHForm">
+          <div class="form-row">
+            <div class="form-group col-md-2">
+              <label>Số chứng từ</label>
+              <input type="text" class="form-control" name="SoCT" readonly>
+            </div>
+            <div class="form-group col-md-2">
+              <label>Ngày chứng từ</label>
+              <input type="date" class="form-control" id="NgayDate" name="NgayDate">
+              <!-- Hidden lưu time -->
+              <input type="hidden" id="NgayTime" name="NgayTime">
+            </div>
+            <div class="form-group col-md-2">
+              <label>Mã KH</label>
+              <input type="text" class="form-control" name="MaKH">
+            </div>
+            <div class="form-group col-md-2">
+              <label>TK nợ hàng</label>
+              <input type="text" class="form-control" name="TKNoHang" >
+            </div>
+            <div class="form-group col-md-2">
+              <label>TK nợ thuế</label>
+              <input type="text" class="form-control" name="TKNoThue">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-2">
+              <label>TK có thanh toán</label>
+              <input type="text" class="form-control" name="TKCoThanhToan">
+            </div>
+            <div class="form-group col-md-2">
+              <label>Hạn thanh toán</label>
+              <input type="number" class="form-control" name="HanTT" >
+            </div>
+            <div class="form-group col-md-2">
+              <label>Tiền thanh toán</label>
+              <input type="number" class="form-control" name="TienThanhToan">
+            </div>
+            <div class="form-group col-md-2">
+              <label>Tiền hàng</label>
+              <input type="number" class="form-control" name="TienHang">
+            </div>
+            <div class="form-group col-md-2">
+              <label>Thuế Suất</label>
+              <input type="number" class="form-control" name="ThueSuat">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-2">
+              <label>Tiền Thuế</label>
+              <input type="number" class="form-control" name="TienThue">
+            </div>
+            <div class="form-group col-md-2">
+              <label>HTTT</label>
+              <input type="text" class="form-control" name="HTTT">
+            </div>
+            <div class="form-group col-md-2">
+              <label>Tiền CK</label>
+              <input type="number" class="form-control" name="TienCK" >
+            </div>
+            <div class="form-group col-md-2">
+              <label>Tỷ lệ CK</label>
+              <input type="number" class="form-control" name="TyLeCK">
+            </div>
+            <div class="form-group col-md-2">
+              <label>Tài khoản CK</label>
+              <input type="text" class="form-control" name="TKChietKhau">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-2">
+              <label>Diễn giải</label>
+              <input type="text" class="form-control" name="DienGiai" >
+            </div>
+            <div class="form-group col-md-2">
+              <label>Mã CT</label>
+              <input type="text" class="form-control" name="MaCT">
+            </div>
+          </div>
+        </form>
+
+        <hr>
+
+        <!-- Bảng detail CTHoaDonMuaHang editable -->
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h6>Chi tiết Hàng hóa</h6>
+          <button id="addRowCTHDMHBtn" class="btn btn-sm btn-success">Thêm dòng</button>
+        </div>
+        <table class="table table-sm table-bordered" id="editDetailCTHDMHTable">
+          <thead>
+            <tr>
+              <th>Mã HH</th>
+              <th>Tên HH</th>
+              <th>ĐVT</th>
+              <th>Số lượng</th>
+              <th>Đơn giá</th>
+              <th>Thành tiền</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button id="saveHDMHBtn" class="btn btn-primary">Lưu</button>
+        <button class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
     <script src="../../js/jquery-3.2.1.min.js"></script>
     <!--===============================================================================================-->
     <script src="../../js/popper.min.js"></script>

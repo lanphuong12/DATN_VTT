@@ -336,19 +336,81 @@ data-keyboard="false">
         <!-- Form header -->
         <form id="editHDForm">
           <div class="form-row">
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-2">
               <label>Số chứng từ</label>
               <input type="text" class="form-control" name="SoCT" readonly>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-2">
               <label>Ngày chứng từ</label>
               <input type="date" class="form-control" id="NgayDate" name="NgayDate">
               <!-- Hidden lưu time -->
               <input type="hidden" id="NgayTime" name="NgayTime">
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-2">
               <label>Mã KH</label>
               <input type="text" class="form-control" name="MaKH">
+            </div>
+            <div class="form-group col-md-2">
+              <label>TK nợ thanh toán</label>
+              <input type="text" class="form-control" name="TKNoThanhToan" >
+            </div>
+            <div class="form-group col-md-2">
+              <label>TK có doanh thu</label>
+              <input type="text" class="form-control" name="TKCoDoanhThu">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-2">
+              <label>TK có thuế</label>
+              <input type="text" class="form-control" name="TKCoThue">
+            </div>
+            <div class="form-group col-md-2">
+              <label>Hạn thanh toán</label>
+              <input type="number" class="form-control" name="HanTT" >
+            </div>
+            <div class="form-group col-md-2">
+              <label>Tiền thanh toán</label>
+              <input type="number" class="form-control" name="TienThanhToan">
+            </div>
+            <div class="form-group col-md-2">
+              <label>Tiền doanh thu</label>
+              <input type="number" class="form-control" name="TienDoanhThu">
+            </div>
+            <div class="form-group col-md-2">
+              <label>Thuế Suất</label>
+              <input type="number" class="form-control" name="ThueSuat">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-2">
+              <label>Tiền Thuế</label>
+              <input type="number" class="form-control" name="TienThue">
+            </div>
+            <div class="form-group col-md-2">
+              <label>HTTT</label>
+              <input type="text" class="form-control" name="HTTT">
+            </div>
+            <div class="form-group col-md-2">
+              <label>Tiền CK</label>
+              <input type="number" class="form-control" name="TienCK" >
+            </div>
+            <div class="form-group col-md-2">
+              <label>Tỷ lệ CK</label>
+              <input type="number" class="form-control" name="TyLeCK">
+            </div>
+            <div class="form-group col-md-2">
+              <label>Tài khoản CK</label>
+              <input type="text" class="form-control" name="TKChietKhau">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-2">
+              <label>Diễn giải</label>
+              <input type="text" class="form-control" name="DienGiai" >
+            </div>
+            <div class="form-group col-md-2">
+              <label>Mã CT</label>
+              <input type="text" class="form-control" name="MaCT">
             </div>
           </div>
         </form>
@@ -382,8 +444,6 @@ data-keyboard="false">
     </div>
   </div>
 </div>
-
-
 
     <script src="../../js/jquery-3.2.1.min.js"></script>
     <!--===============================================================================================-->

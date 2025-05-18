@@ -495,14 +495,14 @@ app.get('/api/hdgtgt/:socthdgtgt', (req, res) => {
     });
 });
 
-// Trả header + details để edit
+// UPDATE HDHH
 app.get('/api/hdhhedit', async (req, res) => {
   const { soCT } = req.query;
   if (!soCT) return res.status(400).send('Thiếu soCT');
 
   try {
     const header = await dbGet(
-      `SELECT SoCT, NgayCT, MaKH /*, …*/ 
+      `SELECT * 
        FROM HDHH 
        WHERE SoCT = ?`,
       [soCT]
@@ -527,7 +527,7 @@ app.get('/api/hdhhedit', async (req, res) => {
 
 app.post('/api/hdhhupdate', express.json(), async (req, res) => {
   const { header, details } = req.body;
-  const { SoCT, NgayCT, MaKH } = header;
+  const { SoCT, NgayCT, MaKH,TKNoThanhToan, TKCoDoanhThu, TKCoThue, HanTT, TienThanhToan, TienDoanhThu, ThueSuat, TienThue, HTTT, TienCK, TyLeCK, TKChietKhau, DienGiai, MaCT } = header;
   if (!SoCT) return res.status(400).send('Thiếu SoCT');
 
   try {
@@ -536,9 +536,9 @@ app.post('/api/hdhhupdate', express.json(), async (req, res) => {
     // 1) Cập nhật header (chưa tính tổng)
     await dbRun(
       `UPDATE HDHH
-         SET NgayCT = ?, MaKH = ?
+         SET NgayCT = ?, MaKH = ?, TKNoThanhToan = ?, TKCoDoanhThu = ?, TKCoThue = ?, HanTT = ?, TienThanhToan = ?, TienDoanhThu = ?, ThueSuat = ?, TienThue = ?, HTTT = ?, TienCK = ?, TyLeCK = ?, TKChietKhau = ?, DienGiai = ?, MaCT = ?
        WHERE SoCT = ?`,
-      [NgayCT, MaKH, SoCT]
+      [NgayCT, MaKH, TKNoThanhToan, TKCoDoanhThu, TKCoThue, HanTT, TienThanhToan, TienDoanhThu, ThueSuat, TienThue, HTTT, TienCK, TyLeCK, TKChietKhau, DienGiai, MaCT, SoCT]
     );
 
     // 2) Xóa cũ + 3) Insert lại detail
@@ -572,6 +572,87 @@ app.post('/api/hdhhupdate', express.json(), async (req, res) => {
   } catch (err) {
     await dbExec('ROLLBACK');
     console.error('❌ LỖI /api/hdhhupdate:', err);
+    res.status(500).send(err.message);
+  }
+});
+
+// UPDATE Hoadonmuahang
+app.get('/api/hdmhedit', async (req, res) => {
+  const { soCT } = req.query;
+  if (!soCT) return res.status(400).send('Thiếu soCT');
+
+  try {
+    const header = await dbGet(
+      `SELECT *
+       FROM HoaDonMuaHang 
+       WHERE SoCT = ?`,
+      [soCT]
+    );
+    const details = await dbAll(
+      `SELECT c.MaHH,
+          h.TenHH,
+          c.SoLuong,
+          c.DonGia,
+          c.ThanhTien
+   FROM CTHoaDonMuaHang c
+   LEFT JOIN DMHH h ON c.MaHH = h.MaHH
+   WHERE c.SoCT = ?`,
+      [soCT]
+    );
+
+    res.json({ header, details });
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+});
+
+app.post('/api/hdmhupdate', express.json(), async (req, res) => {
+  const { header, details } = req.body;
+  const { SoCT, NgayCT, MaKH, TKNoHang, TKNoThue, TKCoThanhToan, HanTT, TienThanhToan, TienHang, ThueSuat, TienThue, HTTT, TienCK, TyLeCK, TKChietKhau, DienGiai,  MaCT} = header;
+  if (!SoCT) return res.status(400).send('Thiếu SoCT');
+
+  try {
+    await dbExec('BEGIN TRANSACTION');
+
+    // 1) Cập nhật header (chưa tính tổng)
+    await dbRun(
+      `UPDATE HoaDonMuaHang
+         SET NgayCT = ?, MaKH = ?, TKNoHang = ?, TKNoThue = ?, TKCoThanhToan = ?, HanTT = ?, TienThanhToan = ?, TienHang = ?, ThueSuat = ?, TienThue = ?, HTTT = ?, TienCK = ?, TyLeCK = ?, TKChietKhau = ?, DienGiai = ?, MaCT = ?
+       WHERE SoCT = ?`,
+      [NgayCT, MaKH, TKNoHang, TKNoThue, TKCoThanhToan, HanTT, TienThanhToan, TienHang, ThueSuat, TienThue, HTTT, TienCK, TyLeCK, TKChietKhau, DienGiai,  MaCT, SoCT]
+    );
+
+    // 2) Xóa cũ + 3) Insert lại detail
+    await dbRun(`DELETE FROM CTHoaDonMuaHang WHERE SoCT = ?`, [SoCT]);
+    const insert = `INSERT INTO CTHoaDonMuaHang
+                    (SoCT, MaHH, SoLuong, DonGia, ThanhTien)
+                    VALUES (?,?,?,?,?)`;
+    for (const d of details) {
+      await dbRun(insert, [
+        SoCT, d.MaHH, d.SoLuong, d.DonGia, d.ThanhTien
+      ]);
+    }
+
+    // 4) Tính tổng ThanhTien của CTHoaDonMuaHang và cập nhật vào HoaDonMuaHang.TienThanhToan
+    const sumRow = await dbGet(
+      `SELECT IFNULL(SUM(ThanhTien),0) AS total
+         FROM CTHoaDonMuaHang
+        WHERE SoCT = ?`,
+      [SoCT]
+    );
+    await dbRun(
+      `UPDATE HoaDonMuaHang
+         SET TienThanhToan = ?
+       WHERE SoCT = ?`,
+      [sumRow.total, SoCT]
+    );
+
+    await dbExec('COMMIT');
+    // Trả về JSON để client .done() không fail
+    res.json({ success: true });
+  } catch (err) {
+    await dbExec('ROLLBACK');
+    console.error('❌ LỖI /api/hdmhupdate:', err);
     res.status(500).send(err.message);
   }
 });
