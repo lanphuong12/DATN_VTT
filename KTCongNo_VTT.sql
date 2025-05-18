@@ -637,9 +637,9 @@ INSERT INTO HDHH (SoCT, NgayCT, MaKH, TKNoThanhToan, TKCoDoanhThu, TKCoThue, Han
 ('HD006',   '2024-04-24 01:26:45', 'KH006', '131', '156', '', 10, 18300000, 18300000, 8, 0, '', 0, 2, '', 'Máy tính tiền, camera cho CÔNG TY CỔ PHẦN DƯỢC MỸ', 'HD');
 
 INSERT INTO HoaDonMuaHang (SoCT, NgayCT, MaKH, TKNoHang, TKNoThue, TKCoThanhToan, HanTT, TienThanhToan, TienHang, ThueSuat, TienThue, HTTT, TienCK, TyLeCK, TKChietKhau, DienGiai, MaCT) VALUES
-('MH001',   '2024-04-14 00:00:00', 'NCC003', '642', '1331', '331', 28000000, 10 , 28000000, 0, 0, '', 0, 0, '', 'Mua nội thất cho phòng họp số 3', 'MH'),
-('MH002',   '2024-03-02 00:00:00', 'NCC004', '642', '1331', '331', 2300000, 30 , 2300000, 0, 0, '', 0, 0, '', 'Dọn vệ sinh định kỳ', 'MH'),
-('MH003',   '2024-04-03 00:00:00', 'NCC005', '642', '1331', '331', 750000, 20 , 750000, 0, 0, '', 0, 0, '', 'Mua văn phòng phẩm tháng 4', 'MH'),
+('MH001',   '2024-04-14 00:00:00', 'NCC003', '642', '1331', '331', 10 ,28000000,  28000000, 0, 0, '', 0, 0, '', 'Mua nội thất cho phòng họp số 3', 'MH'),
+('MH002',   '2024-03-02 00:00:00', 'NCC004', '642', '1331', '331',  30 ,2300000, 2300000, 0, 0, '', 0, 0, '', 'Dọn vệ sinh định kỳ', 'MH'),
+('MH003',   '2024-04-03 00:00:00', 'NCC001', '642', '1331', '331', 20 ,  750000, 750000, 0, 0, '', 0, 0, '', 'Mua văn phòng phẩm tháng 4', 'MH'),
 ('TL001',   '2024-05-25 00:00:00', 'NCC002', '153', '133', '111', 0, 0 , 0, 0, 0, '', 0, 0, '', '', 'TL');
 INSERT INTO NganHang (MaNH, TenNH) VALUES
 ('AGB', 'Ngân hàng Nông nghiệp và Phát triển Nông thôn Việt Nam'),
@@ -664,8 +664,8 @@ INSERT INTO NoDauKy (Id, MaTK, MaKH, DuNo, DuCo) VALUES
 (11, '131', 'KH010', 50000000, 0),
 (12, '331', 'NCC002', 0, 10000000),
 (13, '331', 'NCC003', 0, 15000000),
-(14, '331', 'NCC004', 0, 23000000),
-(15, '331', 'NCC005', 0, 35000000),
+(14, '331', 'NCC001', 0, 23000000),
+(15, '331', 'NCC003', 0, 35000000),
 (16, '131', 'KH006', 0, 6000000);
 
 INSERT INTO PhieuKT (SoCT, NgayCT, MaKH, LyDo, CTLQ, MaCT) VALUES

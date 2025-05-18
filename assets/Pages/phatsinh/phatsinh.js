@@ -71,6 +71,128 @@ function detailHDGTGT(soct) {
     window.open(`formGTGT.html?soct=${soct}`, '_blank');
 }
 
+// Gọi khi click nút Sửa
+// Hiện modal và load header + details
+$(function() {
+  let dmhhList = [];
+  // 1) Load danh sách Mã hàng từ DMHH
+  $.getJSON('/api/dmhh', data => {
+    dmhhList = data;
+  });
+
+  // 2) Hàm mở modal và load dữ liệu
+  window.editHDGTGT = function(soCT) {
+    $.getJSON(`/api/hdhhedit?soCT=${soCT}`, ({ header, details }) => {
+      // Header
+      let [datePart, timePart] = header.NgayCT.split(' ');
+      $('#NgayDate').val(datePart);
+      $('#NgayTime').val(timePart);
+      $('#editHDForm [name=SoCT]').val(header.SoCT);
+      $('#editHDForm [name=MaKH]').val(header.MaKH);
+
+      // Details: CTHoaDon
+      const tb = $('#editDetailTable tbody').empty();
+      details.forEach(d => appendDetailRow(d));
+      $('#editHDModal').modal('show');
+    }).fail((xhr, status, err) => {
+      alert('Không tải được dữ liệu: ' + err);
+    });
+  };
+
+  // 3) Thêm dòng chi tiết CTHoaDon editable, có select Mã HH
+  function appendDetailRow(data = {}) {
+    const selectHH = $('<select class="form-control maHH"><option value="">--Chọn HH--</option></select>');
+    dmhhList.forEach(hh => {
+      selectHH.append(`<option value="${hh.MaHH}">${hh.MaHH}</option>`);
+    });
+    if (data.MaHH) selectHH.val(data.MaHH);
+
+    const row = $(
+      `<tr>
+        <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>`
+    );
+    const cols = row.find('td');
+    cols.eq(0).append(selectHH);
+    cols.eq(1).append('<input type="text" class="form-control tenHH" readonly>');
+    cols.eq(2).append('<input type="text" class="form-control dvt" readonly>');
+    cols.eq(3).append(`<input type="number" class="form-control soLuong" value="${data.SoLuong||0}">`);
+    cols.eq(4).append(`<input type="number" class="form-control donGia" value="${data.DonGia||0}">`);
+    cols.eq(5).append(`<input type="number" class="form-control thanhTien" value="${data.ThanhTien||0}" readonly>`);
+    cols.eq(6).append('<button type="button" class="btn btn-sm btn-danger removeRow"><i class="fas fa-trash"></i></button>');
+
+    if (data.MaHH) {
+      const hh = dmhhList.find(x => x.MaHH === data.MaHH);
+      if (hh) {
+        row.find('.tenHH').val(hh.TenHH);
+        row.find('.dvt').val(hh.DVT);
+      }
+    }
+    row.find('.maHH').on('change', function() {
+      const val = $(this).val();
+      const hh = dmhhList.find(x => x.MaHH === val) || {};
+      row.find('.tenHH').val(hh.TenHH || '');
+      row.find('.dvt').val(hh.DVT || '');
+    });
+    row.find('.soLuong, .donGia').on('input', () => {
+      const sl = parseFloat(row.find('.soLuong').val())||0;
+      const dg = parseFloat(row.find('.donGia').val())||0;
+      row.find('.thanhTien').val((sl*dg).toFixed(2));
+    });
+    row.find('.removeRow').on('click', () => row.remove());
+
+    $('#editDetailTable tbody').append(row);
+  }
+
+  // 4) Thêm dòng mới
+  $('#addRowBtn').on('click', () => appendDetailRow());
+
+  // 5) Lưu header + details về server
+  $('#saveHDBtn').on('click', function() {
+    const SoCT    = $('#editHDForm [name=SoCT]').val();
+    const MaKH    = $('#editHDForm [name=MaKH]').val();
+    const datePart = $('#NgayDate').val();
+    const timePart = $('#NgayTime').val();
+    const NgayCT   = `${datePart} ${timePart}`;
+    const header = { SoCT, NgayCT, MaKH };
+
+    const details = [];
+    $('#editDetailTable tbody tr').each((_, tr) => {
+      const $tr = $(tr);
+      const MaHH      = $tr.find('.maHH').val();
+      const SoLuong   = parseFloat($tr.find('.soLuong').val())||0;
+      const DonGia    = parseFloat($tr.find('.donGia').val())   ||0;
+      const ThanhTien = parseFloat($tr.find('.thanhTien').val())||0;
+      if (MaHH) details.push({ SoCT, MaHH, SoLuong, DonGia, ThanhTien });
+    });
+
+    $.ajax({
+      url: '/api/hdhhupdate',
+      method: 'POST',
+      contentType: 'application/json',
+      dataType: 'json',
+      data: JSON.stringify({ header, details }),
+    })
+    .done(res => {
+      if (res.success) {
+        alert('Lưu thành công!');
+        $('#editHDModal').modal('hide');
+        // renderPageHDGTGT(currentPage);
+        loadHDGTGT();
+      } else {
+        alert('Lưu thất bại: ' + JSON.stringify(res));
+      }
+    })
+    .fail((xhr, status, err) => {
+      console.error('AJAX LỖI:', status, err, xhr.responseText);
+      alert('Lỗi khi lưu: ' + (xhr.responseText||status));
+    });
+  });
+});
+
+
+
+
 // ================= PHIẾU KẾ TOÁN =================
 function renderPagePKT(page) {
   const start = (page - 1) * pageSize;

@@ -15671,3 +15671,24 @@ text-align:center;
   .treeview.active .treeview-menu1 {
     display: block;
   }
+
+  /* Khi viewport >= 992px (breakpoint lg) */
+  @media (min-width: 1000px) {
+    /* Kéo modal-dialog ra full màn hình ngang */
+    #editHDModal .modal-dialog {
+      max-width: 1000px;
+      width: 1000px;
+      height: 500px;
+      margin-left: 300px;
+    }
+    /* Cho modal-content full cao và bỏ bo góc */
+    #editHDModal .modal-content {
+      height: 500px;
+      border-radius: 0;
+      overflow: hidden;
+    }
+    /* Nội dung modal-body scroll được khi vượt quá */
+    #editHDModal .modal-body {
+      overflow-y: auto;
+    }
+  }

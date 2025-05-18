@@ -149,23 +149,20 @@
   <script>
     (async () => {
       const p = new URLSearchParams(location.search);
-      const cutoff = p.get('date'), matk = p.get('matk');
-      if (!cutoff || !matk) {
+      const ngay = p.get('date'), matk = p.get('matk');
+      if (!ngay || !matk) {
         document.querySelector('#report tbody')
           .innerHTML = '<tr><td colspan="6">Thiếu tham số</td></tr>';
         return;
       }
-      document.getElementById('cutoff').textContent = cutoff;
-      document.getElementById('acct').textContent   = matk;
-  
-      const res = await fetch(`/api/details?date=${cutoff}&matk=${matk}`);
+      const res = await fetch(`/api/noquahanphaithu?date=${ngay}&matk=${matk}`);
       if (!res.ok) {
         document.querySelector('#report tbody')
           .innerHTML = `<tr><td colspan="6">Lỗi: ${res.status}</td></tr>`;
         return;
       }
-
-      document.getElementById('ngay').textContent = cutoff;
+      document.getElementById('ngaybatdau').textContent = ngay;
+  
 
       const { rows, totals } = await res.json();
   
@@ -183,9 +180,9 @@
         tbody.appendChild(tr);
       });
   
-      document.getElementById('NoCuoiKy').textContent = totals.NoDauKy.toLocaleString();
-      document.getElementById('CoCuoiKy').textContent = totals.CoDauKy.toLocaleString(); 
-      document.getElementById('NoQuaHan').textContent = totals.PhatSinhNo.toLocaleString();
+      document.getElementById('NoCuoiKy').textContent = totals.NoCuoiKy.toLocaleString();
+      document.getElementById('CoCuoiKy').textContent = totals.CoCuoiKy.toLocaleString(); 
+      document.getElementById('NoQuaHan').textContent = totals.NoQuaHan.toLocaleString();
       
     })();
     </script>

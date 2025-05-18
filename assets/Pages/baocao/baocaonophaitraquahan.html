@@ -98,29 +98,34 @@
   <h2>BÁO CÁO NỢ QUÁ HẠN</h2>
   <div class="subtitle">
 
-   Ngày <strong><span id="ngay"></span></strong><br />
-    Tài khoản: <strong>331 - Phải trả cho người bán</strong>
-    
+   Ngày <strong><span id="ngaybatdau"></span></strong><br />
+    Tài khoản: <strong>331 - Phải trả cho NCC</strong><br /> 
 
   </div>
-  <table>
-    <tr>
-      <th>Mã KH/NCC</th>
-      <th>Tên KH/NCC</th>
-      <th>Mã số thuế</th>
-      <th>Nợ cuối kỳ</th>
-      <th>Có cuối kỳ</th>
-      <th>Nợ quá hạn</th>
-    </tr>
+  <table id="report">
+    <thead>
+      <tr>
+        <th>Mã KH/NCC</th>
+        <th>Tên KH/NCC</th>
+        <th>Mã số thuế</th>
+        <th>Nợ cuối kỳ</th>
+        <th>Có cuối kỳ</th>
+        <th>Nợ quá hạn</th>
+      </tr>
+    </thead>
 
+    <tbody id="body"></tbody>
+    <tfoot>
       <tr>
         <td></td>
         <td>TỔNG CỘNG</td>
         <td></td>
-        <td>14,31,50,000</td>
-        <td>60,00,000</td>
-        <td>0</td>
+        <td><span id="NoCuoiKy"></span></td>
+        <td><span id="CoCuoiKy"></span></td>
+        <td><span id="NoQuaHan"></span></td>
       </tr>
+    </tfoot>
+      
     <!-- Bạn có thể thêm dòng ở đây nếu cần -->
   </table>
 
@@ -144,21 +149,21 @@
   <script>
     (async () => {
       const p = new URLSearchParams(location.search);
-      const cutoff = p.get('date'), matk = p.get('matk');
-      if (!cutoff || !matk) {
+      const ngay = p.get('date'), matk = p.get('matk');
+      if (!ngay || !matk) {
         document.querySelector('#report tbody')
           .innerHTML = '<tr><td colspan="6">Thiếu tham số</td></tr>';
         return;
       }
-      document.getElementById('cutoff').textContent = cutoff;
-      document.getElementById('acct').textContent   = matk;
-  
-      const res = await fetch(`/api/details?date=${cutoff}&matk=${matk}`);
+      const res = await fetch(`/api/noquahanphaitra?date=${ngay}&matk=${matk}`);
       if (!res.ok) {
         document.querySelector('#report tbody')
           .innerHTML = `<tr><td colspan="6">Lỗi: ${res.status}</td></tr>`;
         return;
       }
+      document.getElementById('ngaybatdau').textContent = ngay;
+  
+
       const { rows, totals } = await res.json();
   
       const tbody = document.querySelector('#report tbody');
@@ -175,16 +180,10 @@
         tbody.appendChild(tr);
       });
   
-      // thêm 1 dòng tổng
-      const tf = document.querySelector('#report tfoot');
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <th colspan="3">TỔNG CỘNG</th>
-        <th>${totals.NoCuoiKy.toLocaleString()}</th>
-        <th>${totals.CoCuoiKy.toLocaleString()}</th>
-        <th>${totals.NoQuaHan.toLocaleString()}</th>
-      `;
-      tf.appendChild(tr);
+      document.getElementById('NoCuoiKy').textContent = totals.NoCuoiKy.toLocaleString();
+      document.getElementById('CoCuoiKy').textContent = totals.CoCuoiKy.toLocaleString(); 
+      document.getElementById('NoQuaHan').textContent = totals.NoQuaHan.toLocaleString();
+      
     })();
     </script>
 
