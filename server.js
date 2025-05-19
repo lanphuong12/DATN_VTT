@@ -781,7 +781,110 @@ app.post('/api/hdmhupdate', express.json(), async (req, res) => {
   }
 });
 
+// TẠO mới HóaDonMuaHang
+app.post('/api/hdmhcreate', express.json(), async (req, res) => {
+  const { header, details } = req.body;
+  const {
+    SoCT, NgayCT, MaKH,
+    TKNoHang, TKNoThue, TKCoThanhToan,
+    HanTT, TienHang,
+    ThueSuat, TienThue, HTTT,
+    TienCK, TyLeCK, TKChietKhau,
+    DienGiai, MaCT
+  } = header;
 
+  if (!SoCT) {
+    return res.status(400).send('Thiếu SoCT');
+  }
+
+  try {
+    await dbExec('BEGIN TRANSACTION');
+
+    // 1) Insert header với TienThanhToan = 0
+    await dbRun(
+      `INSERT INTO HoaDonMuaHang
+         (SoCT, NgayCT, MaKH,
+          TKNoHang, TKNoThue, TKCoThanhToan,
+          HanTT, TienThanhToan, TienHang,
+          ThueSuat, TienThue, HTTT,
+          TienCK, TyLeCK, TKChietKhau,
+          DienGiai, MaCT)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        SoCT, NgayCT, MaKH,
+        TKNoHang, TKNoThue, TKCoThanhToan,
+        HanTT, 0,             // đặt tạm TienThanhToan = 0
+        TienHang,
+        ThueSuat, TienThue, HTTT,
+        TienCK, TyLeCK, TKChietKhau,
+        DienGiai, MaCT
+      ]
+    );
+
+    // 2) Insert chi tiết
+    const insertDetail = `
+      INSERT INTO CTHoaDonMuaHang
+        (SoCT, MaHH, SoLuong, DonGia, ThanhTien)
+      VALUES (?, ?, ?, ?, ?)
+    `;
+    for (const d of details) {
+      await dbRun(insertDetail, [
+        SoCT, d.MaHH, d.SoLuong, d.DonGia, d.ThanhTien
+      ]);
+    }
+
+    // 3) Tính tổng ThanhTien và update lại header
+    const { total } = await dbGet(
+      `SELECT IFNULL(SUM(ThanhTien),0) AS total
+         FROM CTHoaDonMuaHang
+        WHERE SoCT = ?`,
+      [SoCT]
+    );
+    await dbRun(
+      `UPDATE HoaDonMuaHang
+         SET TienThanhToan = ?
+       WHERE SoCT = ?`,
+      [total, SoCT]
+    );
+
+    await dbExec('COMMIT');
+    res.json({ success: true });
+
+  } catch (err) {
+    await dbExec('ROLLBACK');
+    console.error('❌ LỖI /api/hdmhcreate:', err);
+    res.status(500).send(err.message);
+  }
+});
+
+// --- Server-side: XÓA HóaDonMuaHang và CTHoaDonMuaHang ---
+app.post('/api/hdmhdelete', express.json(), async (req, res) => {
+  const { SoCT } = req.body;
+  if (!SoCT) return res.status(400).send('Thiếu SoCT');
+
+  try {
+    await dbExec('BEGIN TRANSACTION');
+
+    // 1) Xóa chi tiết trước
+    await dbRun(
+      'DELETE FROM CTHoaDonMuaHang WHERE SoCT = ?',
+      [SoCT]
+    );
+
+    // 2) Xóa header
+    await dbRun(
+      'DELETE FROM HoaDonMuaHang WHERE SoCT = ?',
+      [SoCT]
+    );
+
+    await dbExec('COMMIT');
+    res.json({ success: true });
+  } catch (err) {
+    await dbExec('ROLLBACK');
+    console.error('❌ LỖI /api/hdmhdelete:', err);
+    res.status(500).send(err.message);
+  }
+});
 
 // BẢNG PHIẾU KẾ TOÁN - PKT
 // API: Lấy danh sách dữ liệu bảng PKT

@@ -15714,3 +15714,26 @@ text-align:center;
       overflow-y: auto;
     }
   }
+
+  
+   /* Khi viewport >= 992px (breakpoint lg) */
+  @media (min-width: 1000px) {
+    /* Kéo modal-dialog ra full màn hình ngang */
+    #addHDMHModal .modal-dialog {
+      max-width: 1000px;
+      width: 1000px;
+      height: 600px;
+      margin-left: 300px;
+      margin-top: 0px;
+    }
+    /* Cho modal-content full cao và bỏ bo góc */
+    #addHDMHModal .modal-content {
+      height: 600px;
+      border-radius: 0;
+      overflow: hidden;
+    }
+    /* Nội dung modal-body scroll được khi vượt quá */
+    #addHDMHModal .modal-body {
+      overflow-y: auto;
+    }
+  }

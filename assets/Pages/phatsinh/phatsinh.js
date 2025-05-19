@@ -301,7 +301,7 @@ function renderPageHDMH(page) {
         <td>
             <button class="btn btn-primary btn-sm" onclick="detailHDMH('${item.SoCT}')"><i class="fas fa-book"></i></button>
           <button class="btn btn-primary btn-sm" onclick="editHDMH('${item.SoCT}')"><i class="fas fa-edit"></i></button>
-          <button class="btn btn-danger btn-sm" onclick="deletHDGTGT('${item.SoCT}')"><i class="fas fa-trash-alt"></i></button>
+          <button class="btn btn-danger btn-sm" onclick="deleteHDMH('${item.SoCT}')"><i class="fas fa-trash-alt"></i></button>
         </td>
       </tr>`;
     tbody.append(row);
@@ -488,6 +488,30 @@ $(function() {
     });
   });
 });
+
+
+  // Hàm gọi API xóa:
+  function deleteHDMH(SoCT) {
+    if (!confirm(`Bạn có chắc muốn xóa hóa đơn ${SoCT}?`)) return;
+    $.ajax({
+      url: '/api/hdmhdelete',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({ SoCT })
+    })
+    .done(res => {
+      if (res.success) {
+        alert('Xóa thành công!');
+        loadHDMH(); // reload lại danh sách
+      } else {
+        alert('Xóa thất bại: ' + JSON.stringify(res));
+      }
+    })
+    .fail((xhr, status, err) => {
+      console.error('LỖI khi xóa:', status, err, xhr.responseText);
+      alert('Lỗi khi xóa: ' + (xhr.responseText || status));
+    });
+  }
 // ================= $(document).ready =================
 $(document).ready(function () {
     loadHDGTGT();
